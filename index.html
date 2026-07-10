@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аналитика бизнеса · Wildberries</title>
+<style>
+:root{
+  --navy:#0F2747; --navy2:#173559; --ink:#1E293B; --sub:#64748B; --line:#E2E8F0;
+  --blue:#2563EB; --teal:#0E8F8E; --green:#059669; --orange:#EA7317; --red:#DC2626;
+  --purple:#7C3AED; --bg:#F4F6FB; --card:#FFFFFF;
+  --grad:linear-gradient(135deg,#0F2747 0%,#1d3a63 45%,#2563EB 120%);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+.section{padding:46px 0;}
+h2.title{font-size:clamp(20px,5vw,30px);font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+.subt{color:var(--sub);font-size:clamp(13px,3.4vw,15px);margin-bottom:26px;}
+.eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--blue);background:#E7EEFC;padding:5px 12px;border-radius:20px;margin-bottom:14px;}
+
+/* HERO */
+.hero{background:var(--grad);color:#fff;padding:52px 0 92px;position:relative;overflow:hidden;}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;opacity:.16;}
+.hero::before{width:340px;height:340px;background:#4f8cff;top:-120px;right:-90px;filter:blur(8px);animation:float 9s ease-in-out infinite;}
+.hero::after{width:240px;height:240px;background:#13b6a6;bottom:-110px;left:-70px;filter:blur(6px);animation:float 11s ease-in-out infinite reverse;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(26px)}}
+.hero .wrap{position:relative;z-index:2;}
+.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);padding:7px 15px;border-radius:30px;font-size:13px;font-weight:600;backdrop-filter:blur(6px);margin-bottom:18px;}
+.dot{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:pulse 2s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}70%{box-shadow:0 0 0 12px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+.hero h1{font-size:clamp(28px,7vw,50px);font-weight:800;letter-spacing:-1.5px;line-height:1.04;margin-bottom:14px;}
+.hero h1 span{background:linear-gradient(90deg,#7dd3fc,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p.lead{font-size:clamp(14px,3.6vw,18px);color:#cdd9ee;max-width:640px;margin-bottom:22px;}
+/* month toggle */
+.mtoggle{display:inline-flex;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:30px;padding:4px;margin-bottom:26px;gap:2px;max-width:100%;}
+.mtoggle button{appearance:none;border:0;background:transparent;color:#cdd9ee;font-weight:700;font-size:15px;
+  padding:9px 22px;border-radius:24px;cursor:pointer;transition:all .2s;font-family:inherit;white-space:nowrap;}
+.mtoggle button.on{background:#fff;color:var(--navy);box-shadow:0 3px 10px rgba(0,0,0,.18);}
+.heromini{display:flex;flex-wrap:wrap;gap:26px;}
+.heromini .hm b{display:block;font-size:clamp(22px,6vw,34px);font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums;}
+.heromini .hm s{display:block;text-decoration:none;color:#9fb4d4;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;}
+
+/* comparison strip */
+.cmpwrap{margin-top:-58px;position:relative;z-index:3;}
+.cmp{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:0 6px 22px rgba(15,39,71,.08);}
+.cmp h3{font-size:14px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.cmp h3 i{width:9px;height:9px;border-radius:50%;background:var(--purple);display:inline-block;}
+.cmpgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.cmpc{background:var(--bg);border-radius:12px;padding:12px 14px;}
+.cmpc .lab{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;}
+.cmpc .row{display:flex;justify-content:space-between;font-size:13px;padding:1px 0;font-variant-numeric:tabular-nums;}
+.cmpc .row s{text-decoration:none;color:var(--sub);}
+.cmpc .row b{font-weight:700;}
+.cmpc .delta{margin-top:5px;font-size:12px;font-weight:700;}
+.up{color:var(--green);}.down{color:var(--red);}
+
+/* month comparison */
+.cmpctrl{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;}
+.metsel,.modesel{display:flex;gap:6px;flex-wrap:wrap;}
+.metsel button,.modesel button{appearance:none;border:1px solid var(--line);background:#fff;color:var(--sub);
+  font-weight:700;font-size:12.5px;padding:7px 13px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.metsel button.on{background:var(--navy);color:#fff;border-color:var(--navy);}
+.modesel button.on{background:#E7EEFC;color:var(--blue);border-color:#cdddf8;}
+
+/* KPI cards */
+.grid{display:grid;gap:14px;}
+.k4{grid-template-columns:repeat(4,1fr);}
+.k3{grid-template-columns:repeat(3,1fr);}
+.k2{grid-template-columns:repeat(2,1fr);}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px;box-shadow:0 1px 2px rgba(15,39,71,.04);position:relative;overflow:hidden;}
+.kpi .card{border-top:3px solid var(--ac,var(--blue));}
+.kpi .lab{font-size:12px;font-weight:700;letter-spacing:.4px;color:var(--sub);text-transform:uppercase;}
+.kpi .val{font-size:clamp(20px,5vw,27px);font-weight:800;letter-spacing:-.6px;color:var(--ac,var(--ink));margin:4px 0 2px;font-variant-numeric:tabular-nums;}
+.kpi .sub{font-size:12px;color:var(--sub);}
+
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+.reveal.vis{opacity:1;transform:none;}
+.reveal.d1{transition-delay:.06s}.reveal.d2{transition-delay:.12s}.reveal.d3{transition-delay:.18s}
+
+/* chart */
+.chartcard{padding:22px;}
+.charthead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.legend{display:flex;gap:16px;font-size:12.5px;color:var(--sub);flex-wrap:wrap;}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+.hint{font-size:12px;color:var(--sub);}
+svg{display:block;width:100%;height:auto;}
+#dayChart{position:relative;touch-action:pan-y;}
+.tip{position:absolute;z-index:20;pointer-events:none;background:#0F2747;color:#fff;border-radius:12px;
+  padding:10px 13px;width:max-content;max-width:94%;box-shadow:0 12px 30px rgba(15,39,71,.3);font-size:12.5px;
+  white-space:nowrap;opacity:0;transform:translate(-50%,4px);transition:opacity .14s ease,transform .14s ease;}
+.tip.on{opacity:1;transform:translate(-50%,0);}
+.tip .th{font-weight:800;font-size:13.5px;margin-bottom:6px;}
+.tip .tr{display:flex;justify-content:space-between;gap:18px;padding:2.5px 0;}
+.tip .tr s{text-decoration:none;color:#9fb4d4;}
+.tip .tr b{font-weight:700;font-variant-numeric:tabular-nums;}
+.tip .tg{color:#5eead4;}.tip .tb{color:#7dd3fc;}
+.readout{margin-top:14px;border-top:1px solid var(--line);padding-top:14px;}
+.rdhead{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:12px;}
+.rdday{font-size:17px;font-weight:800;min-width:120px;text-align:center;}
+.rdnav{width:40px;height:40px;flex:0 0 40px;border:1px solid var(--line);background:#fff;border-radius:12px;font-size:22px;line-height:1;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .1s;user-select:none;}
+.rdnav:active{transform:scale(.92);background:#e7eefc;}
+.rdgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.rdstat{background:var(--bg);border-radius:12px;padding:11px 12px;text-align:center;}
+.rdstat s{display:block;text-decoration:none;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;}
+.rdstat b{font-size:clamp(14px,3.6vw,17px);font-weight:800;font-variant-numeric:tabular-nums;}
+.rdstat.sales b{color:var(--blue);}.rdstat.marg b{color:var(--green);}
+
+/* brands */
+.brow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+.brow:last-child{border-bottom:0;}
+.bname{flex:0 0 38%;font-weight:700;font-size:14px;}
+.bbarwrap{flex:1;height:9px;background:#Eef2f8;border-radius:6px;overflow:hidden;}
+.bbar{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#0E8F8E,#2563EB);transition:width 1s cubic-bezier(.2,.7,.2,1);}
+.bval{flex:0 0 auto;font-variant-numeric:tabular-nums;font-weight:700;font-size:13.5px;text-align:right;min-width:96px;}
+.bpct{flex:0 0 auto;font-size:12px;color:var(--sub);min-width:54px;text-align:right;}
+
+.fcard{border-radius:18px;padding:22px;border:1px solid var(--line);background:var(--card);}
+.fcard.base{border:2px solid var(--green);box-shadow:0 8px 30px rgba(5,150,105,.12);}
+.ftag{font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.ftag.b{color:var(--green);}
+.fval{font-size:clamp(24px,6vw,34px);font-weight:800;letter-spacing:-.8px;font-variant-numeric:tabular-nums;}
+.fsub{font-size:13px;color:var(--sub);margin-top:6px;}
+.fnote{margin-top:18px;font-size:13px;color:var(--sub);background:#F1F5FB;border-left:3px solid var(--purple);padding:12px 14px;border-radius:0 10px 10px 0;}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;}
+.tbl th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--sub);padding:10px 10px;border-bottom:2px solid var(--line);}
+.tbl td{padding:10px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;}
+.tbl tr:last-child td{border-bottom:0;}
+.tbl .r{text-align:right;}
+.tbl tbody tr:hover{background:#F6F9FE;}
+.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700;}
+.p-red{background:#FDE7E7;color:#B91C1C;}.p-org{background:#FCEFE0;color:#B45309;}.p-amb{background:#FBF3DD;color:#92710C;}
+.neg{color:var(--red);font-weight:700;}
+.scroller{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;}
+
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;}
+.chip b{display:block;font-size:clamp(19px,5vw,26px);font-weight:800;font-variant-numeric:tabular-nums;}
+.chip s{display:block;text-decoration:none;font-size:11.5px;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:3px;}
+.catrow{display:flex;align-items:center;gap:10px;padding:9px 0;}
+.catname{flex:0 0 40%;font-size:13px;font-weight:600;}
+.catbar{flex:1;height:8px;background:#Eef2f8;border-radius:5px;overflow:hidden;}
+.catbarf{height:100%;width:0;border-radius:5px;transition:width 1s cubic-bezier(.2,.7,.2,1);}
+.catval{flex:0 0 auto;min-width:92px;text-align:right;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;}
+.ins{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.inscard{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ac,var(--blue));border-radius:0 14px 14px 0;padding:16px 18px;}
+.inscard h4{font-size:14.5px;font-weight:800;margin-bottom:5px;}
+.inscard p{font-size:13px;color:var(--sub);}
+footer{background:var(--navy);color:#aec0db;padding:34px 0;font-size:13px;text-align:center;}
+footer b{color:#fff;}
+.divider{height:1px;background:var(--line);margin:0;}
+
+@media(max-width:760px){
+  .wrap{padding:0 14px;}
+  .k4{grid-template-columns:repeat(2,1fr);}
+  .k3{grid-template-columns:1fr;}
+  .k2{grid-template-columns:1fr!important;}
+  .ins{grid-template-columns:1fr;}
+  .chips{grid-template-columns:repeat(2,1fr);}
+  .cmpgrid{grid-template-columns:repeat(2,1fr);}
+  .cmpwrap{margin-top:-46px;}
+  .card{padding:15px 15px;border-radius:14px;}
+  .chartcard{padding:14px 10px 10px;}
+  .charthead{flex-direction:column;align-items:flex-start;gap:5px;}
+  .bname{flex:0 0 36%;font-size:13px;}.bval{min-width:80px;font-size:12px;}.bpct{display:none;}
+  .section{padding:32px 0;}
+  .tip{display:none;}
+  .rdgrid{grid-template-columns:1fr 1fr;}
+  .rdnav{width:46px;height:46px;flex:0 0 46px;font-size:24px;}
+  .charthead .hint{display:none;}
+  .mtoggle{display:flex;width:100%;gap:2px;}
+  .mtoggle button{flex:1;padding:10px 4px;font-size:14px;}
+  .cmpctrl{flex-direction:column;align-items:stretch;gap:8px;}
+  .metsel,.modesel{justify-content:center;}
+  .metsel button,.modesel button{padding:7px 12px;font-size:12px;}
+  #cmpTable{font-size:12.5px;}
+}
+@media(max-width:380px){ .k4,.cmpgrid{grid-template-columns:1fr;} }
+/* store toggle */
+.stoggle{display:inline-flex;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.30);border-radius:30px;padding:5px;margin-bottom:22px;gap:3px;}
+.stoggle button{appearance:none;border:0;background:transparent;color:#dbe6f7;font-weight:800;font-size:15px;padding:10px 30px;border-radius:24px;cursor:pointer;transition:all .2s;font-family:inherit;letter-spacing:.2px;}
+.stoggle button.on{background:#fff;color:var(--navy);box-shadow:0 4px 14px rgba(0,0,0,.22);}
+.hero.le-hero{background:linear-gradient(135deg,#1a1024 0%,#3a1c46 45%,#b8477e 120%);}
+@media(max-width:760px){.stoggle{display:flex;width:100%;}.stoggle button{flex:1;padding:11px 4px;font-size:14px;}}
+#leChart{position:relative;touch-action:pan-y;}
+</style>
+</head>
+<body>
+
+<header class="hero"><div class="wrap">
+  <div class="stoggle"><button id="st-wb" class="on" onclick="setStore('wb')">Wildberries</button><button id="st-le" onclick="setStore('le')">Летуаль</button></div>
+  <div id="heroWB">
+  <div class="hbadge"><span class="dot"></span> Аналитика Wildberries · 2026</div>
+  <h1>Аналитика бизнеса<br><span id="hMonth">Июнь 2026</span></h1>
+  <p class="lead" id="hLead">—</p>
+  <div class="mtoggle" role="tablist">
+    <button id="btn-apr" onclick="setMonth('apr')">Апрель</button>
+    <button id="btn-may" onclick="setMonth('may')">Май</button>
+    <button id="btn-june" onclick="setMonth('june')">Июнь</button>
+    <button id="btn-july" class="on" onclick="setMonth('july')">Июль</button>
+  </div>
+  <div class="heromini">
+    <div class="hm"><b id="hm-salR">0</b><s>Продажи</s></div>
+    <div class="hm"><b id="hm-margin">0</b><s>Маржа</s></div>
+    <div class="hm"><b id="hm-buyout">0</b><s>Выкуп</s></div>
+  </div>
+  </div>
+  <div id="heroLE" style="display:none">
+    <div class="hbadge"><span class="dot"></span> Аналитика Летуаль · 2026</div>
+    <h1>Аналитика бизнеса<br><span>Летуаль</span></h1>
+    <p class="lead" id="leLead">—</p>
+    <div class="heromini">
+      <div class="hm"><b id="le-hm-dostR">0</b><s>Продажи</s></div>
+      <div class="hm"><b id="le-hm-zakR">0</b><s>Заказы</s></div>
+      <div class="hm"><b id="le-hm-check">0</b><s>Средний чек</s></div>
+    </div>
+  </div>
+</div></header>
+<div id="viewWB">
+
+<!-- COMPARISON -->
+<section class="wrap cmpwrap"><div class="cmp reveal vis" id="cmpBox"></div></section>
+
+<!-- KPI -->
+<section class="wrap kpi" style="margin-top:26px">
+  <div class="grid k4">
+    <div class="card" style="--ac:var(--blue)"><div class="lab">Заказы</div><div class="val" id="k-ordR">0</div><div class="sub" id="k-ordRs"></div></div>
+    <div class="card" style="--ac:var(--teal)"><div class="lab">Продажи (выкуп)</div><div class="val" id="k-salR">0</div><div class="sub" id="k-salRs"></div></div>
+    <div class="card" style="--ac:var(--green)"><div class="lab">Маржа валовая</div><div class="val" id="k-margin">0</div><div class="sub" id="k-margins"></div></div>
+    <div class="card" style="--ac:var(--purple)"><div class="lab">% выкупа</div><div class="val" id="k-buyout">0</div><div class="sub">продажи ÷ заказы</div></div>
+  </div>
+  <div class="grid k4" style="margin-top:14px">
+    <div class="card" style="--ac:var(--orange)"><div class="lab">Себестоимость</div><div class="val" id="k-cogs">0</div><div class="sub">COGS проданных товаров</div></div>
+    <div class="card" style="--ac:var(--blue)"><div class="lab">Средний чек</div><div class="val" id="k-check">0</div><div class="sub">выручка ÷ шт выкупа</div></div>
+    <div class="card" style="--ac:var(--teal)"><div class="lab">Продаж в день</div><div class="val" id="k-perday">0</div><div class="sub" id="k-perdays"></div></div>
+    <div class="card" style="--ac:var(--green)"><div class="lab">Маржа в день</div><div class="val" id="k-mday">0</div><div class="sub">средняя за день</div></div>
+  </div>
+</section>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Динамика</span>
+  <h2 class="title">Продажи и маржа по дням</h2>
+  <p class="subt" id="dynSub">—</p></div>
+  <div class="card chartcard">
+    <div class="charthead">
+      <div class="legend"><span><i style="background:#2563EB"></i>Продажи, ₽</span><span><i style="background:#059669"></i>Маржа, ₽</span></div>
+      <div class="hint">Ведите пальцем по графику</div>
+    </div>
+    <div id="dayChart"></div>
+    <div class="readout">
+      <div class="rdhead"><button class="rdnav" id="rdPrev">‹</button><div class="rdday" id="rdDay">—</div><button class="rdnav" id="rdNext">›</button></div>
+      <div class="rdgrid">
+        <div class="rdstat sales"><s>Продажи</s><b id="rdSales">—</b></div>
+        <div class="rdstat marg"><s>Маржа</s><b id="rdMargin">—</b></div>
+        <div class="rdstat"><s>Заказы</s><b id="rdOrders">—</b></div>
+        <div class="rdstat"><s>Выкуп</s><b id="rdBuyout">—</b></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<div class="divider"></div>
+
+<section class="section" style="background:linear-gradient(180deg,#eef2fb,#f4f6fb)"><div class="wrap">
+  <div><span class="eyebrow" style="color:var(--purple);background:#EFEAFB">Сравнение</span>
+  <h2 class="title">Сравнение месяцев</h2>
+  <p class="subt">Апрель · Май · Июнь · Июль — выберите показатель и режим (июль — предварительно, за 9 дней)</p></div>
+  <div class="card" style="padding:20px 22px">
+    <div class="cmpctrl">
+      <div class="metsel" id="metSel"></div>
+      <div class="modesel" id="modeSel"><button data-m="total">Всего за месяц</button><button data-m="day" class="on">В среднем за день</button></div>
+    </div>
+    <div id="cmpChart"></div>
+  </div>
+  <div class="card" style="padding:8px 0;margin-top:18px">
+    <div class="scroller"><table class="tbl" id="cmpTable"></table></div>
+  </div>
+</div></section>
+
+<div class="divider"></div>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Бренды</span>
+  <h2 class="title">Продажи по брендам</h2>
+  <p class="subt" id="brandSub">—</p></div>
+  <div class="card" style="padding:8px 22px" id="brandList"></div>
+</div></section>
+
+<div class="divider"></div>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Товары</span>
+  <h2 class="title">Топ-15 товаров по выручке</h2>
+  <p class="subt" id="skuSub">—</p></div>
+  <div class="card" style="padding:8px 0">
+    <div class="scroller"><table class="tbl"><thead><tr><th>Артикул</th><th>Бренд</th><th class="r">Прод. шт</th><th class="r">Продажи, ₽</th><th class="r">Маржа, ₽</th><th class="r">Маржа %</th></tr></thead>
+    <tbody id="skuBody"></tbody></table></div>
+  </div>
+</div></section>
+
+<div class="divider"></div>
+
+<!-- FORECAST (только июнь) -->
+<section class="section" id="forecastSection" style="background:linear-gradient(180deg,#eef2fb,#f4f6fb)"><div class="wrap">
+  <div><span class="eyebrow" style="color:var(--purple);background:#EFEAFB">Прогноз</span>
+  <h2 class="title">Перспективы на следующий месяц</h2>
+  <p class="subt">Прогноз на 30 дней по среднедневным показателям июня · три сценария</p></div>
+  <div class="grid k3">
+    <div class="fcard"><div class="ftag">Пессимистичный ×0.85</div><div class="fval" id="fc-pess">—</div><div class="fsub" id="fc-pesss">—</div></div>
+    <div class="fcard base"><div class="ftag b">Базовый · run-rate</div><div class="fval" id="fc-base" style="color:var(--green)">—</div><div class="fsub" id="fc-bases">—</div></div>
+    <div class="fcard"><div class="ftag">Оптимистичный ×1.15</div><div class="fval" id="fc-opt">—</div><div class="fsub" id="fc-opts">—</div></div>
+  </div>
+  <div class="fnote" id="fc-note">—</div>
+</div></section>
+
+<div class="divider" id="divForecast"></div>
+
+<!-- STOCKS (текущие) -->
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Остатки</span>
+  <h2 class="title">Склад «Зеленовская»</h2>
+  <p class="subt">Наличие на данный момент · едино для всех месяцев</p></div>
+  <div class="chips" style="margin-bottom:22px">
+    <div class="chip"><b id="st-units">0</b><s>Единиц на складе</s></div>
+    <div class="chip"><b id="st-val">0</b><s>Стоимость остатков</s></div>
+    <div class="chip"><b id="st-in">0</b><s>Позиций в наличии</s></div>
+    <div class="chip"><b style="color:var(--red)" id="st-risk">0</b><s>Риск дефицита</s></div>
+  </div>
+  <div class="grid k2" style="gap:22px">
+    <div class="card" style="padding:20px 22px"><h4 style="font-size:15px;font-weight:800;margin-bottom:10px">Остатки по категориям</h4><div id="catList"></div></div>
+    <div class="card" style="padding:8px 0"><h4 style="font-size:15px;font-weight:800;margin:14px 20px 8px">Риск дефицита — топ позиций</h4>
+      <div class="scroller"><table class="tbl"><thead><tr><th>Артикул</th><th class="r">Остаток</th><th class="r">Продано</th><th class="r">Покрытие</th></tr></thead><tbody id="riskBody"></tbody></table></div></div>
+  </div>
+</div></section>
+
+<div class="divider"></div>
+
+<div class="divider"></div>
+
+<section class="section" id="growthSection" style="background:linear-gradient(180deg,#fff5ef,#f4f6fb)"><div class="wrap">
+  <div><span class="eyebrow" style="color:var(--red);background:#FDECEC">Точки роста</span>
+  <h2 class="title">Где спрятана прибыль</h2>
+  <p class="subt">Упущенная прибыль из-за дефицита, убыточные позиции и замороженные деньги — с планом действий (по продажам июня и текущим остаткам)</p></div>
+  <div class="chips" style="margin-bottom:18px">
+    <div class="chip"><b style="color:var(--red)" id="g-deficit">0</b><s>Упущено на дефиците, ₽/мес</s></div>
+    <div class="chip"><b style="color:var(--red)" id="g-loss">0</b><s>Убыточные товары, ₽/мес</s></div>
+    <div class="chip"><b style="color:var(--orange)" id="g-frozen">0</b><s>Заморожено в остатках, ₽</s></div>
+    <div class="chip"><b style="color:var(--green)" id="g-pot">0</b><s>Потенциал прибыли, ₽/мес</s></div>
+  </div>
+  <div class="fnote" id="g-note" style="border-left-color:var(--red);margin-bottom:18px">—</div>
+  <div class="card" style="padding:8px 0">
+    <h4 style="font-size:15px;font-weight:800;margin:14px 20px 10px">Дефицит — хиты, которые заканчиваются</h4>
+    <div class="scroller"><table class="tbl"><thead><tr><th>Товар</th><th class="r">Прод./мес</th><th class="r">Остаток</th><th class="r">Покрытие</th><th class="r">Потеря ₽/мес</th><th class="r">Заказать</th></tr></thead><tbody id="g-deficitBody"></tbody></table></div>
+  </div>
+  <div class="card" style="padding:8px 0;margin-top:16px">
+    <h4 style="font-size:15px;font-weight:800;margin:14px 20px 10px">Убыточные позиции — поднять цену или убрать из акций</h4>
+    <div class="scroller"><table class="tbl"><thead><tr><th>Товар</th><th class="r">Убыток ₽/мес</th><th class="r">Маржа</th></tr></thead><tbody id="g-lossBody"></tbody></table></div>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Выводы</span>
+  <h2 class="title" id="insTitle">Главное за месяц</h2>
+  <p class="subt" id="insSub">—</p></div>
+  <div class="ins" id="insBox"></div>
+</div></section>
+
+</div><!-- /viewWB -->
+
+<div id="viewLE" style="display:none">
+<section class="wrap kpi" style="margin-top:26px">
+  <div class="grid k4">
+    <div class="card" style="--ac:var(--blue)"><div class="lab">Заказано</div><div class="val" id="le-zakR">0</div><div class="sub" id="le-zakRs"></div></div>
+    <div class="card" style="--ac:var(--teal)"><div class="lab">Доставлено (продажи)</div><div class="val" id="le-dostR">0</div><div class="sub" id="le-dostRs"></div></div>
+    <div class="card" style="--ac:var(--green)"><div class="lab">Средний чек</div><div class="val" id="le-check">0</div><div class="sub">доставлено ₽ ÷ шт</div></div>
+    <div class="card" style="--ac:var(--purple)"><div class="lab">Остаток в продаже</div><div class="val" id="le-stock">0</div><div class="sub">всего по складам</div></div>
+  </div>
+  <div class="grid k4" style="margin-top:14px">
+    <div class="card" style="--ac:var(--orange)"><div class="lab">Товаров в каталоге</div><div class="val" id="le-catalog">0</div><div class="sub">позиций</div></div>
+    <div class="card" style="--ac:var(--blue)"><div class="lab">Продано за 30 дней</div><div class="val" id="le-sold30">0</div><div class="sub">шт (оборачиваемость)</div></div>
+    <div class="card" style="--ac:var(--teal)"><div class="lab">Потребность в поставке</div><div class="val" id="le-need">0</div><div class="sub">шт дозаказать</div></div>
+    <div class="card" style="--ac:var(--green)"><div class="lab">Брендов</div><div class="val" id="le-brandsN">0</div><div class="sub">в ассортименте</div></div>
+  </div>
+</section>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Динамика</span><h2 class="title">Заказы и продажи по дням</h2>
+  <p class="subt" id="le-dynSub">—</p></div>
+  <div class="card chartcard">
+    <div class="charthead"><div class="legend"><span><i style="background:#2563EB"></i>Заказано, ₽</span><span><i style="background:#0E8F8E"></i>Доставлено, ₽</span></div><div class="hint">Наведите или ведите по графику</div></div>
+    <div id="leChart"></div>
+    <div class="readout">
+      <div class="rdhead"><button class="rdnav" id="leRdPrev">‹</button><div class="rdday" id="le-rdDay">—</div><button class="rdnav" id="leRdNext">›</button></div>
+      <div class="rdgrid">
+        <div class="rdstat sales"><s>Заказано</s><b id="le-rdZak">—</b></div>
+        <div class="rdstat"><s>Заказано, ₽</s><b id="le-rdZakR">—</b></div>
+        <div class="rdstat marg"><s>Доставлено</s><b id="le-rdDost">—</b></div>
+        <div class="rdstat"><s>Доставлено, ₽</s><b id="le-rdDostR">—</b></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+<div class="divider"></div>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Бренды</span><h2 class="title">Продажи по брендам</h2>
+  <p class="subt">Вклад брендов за период</p></div>
+  <div class="card" style="padding:8px 22px" id="le-brandList"></div>
+</div></section>
+<div class="divider"></div>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Товары</span><h2 class="title">Топ товаров за период</h2>
+  <p class="subt" id="le-skuSub">—</p></div>
+  <div class="card" style="padding:8px 0"><div class="scroller"><table class="tbl">
+    <thead><tr><th>Товар</th><th>Бренд</th><th class="r">Заказ шт</th><th class="r">Заказ ₽</th><th class="r">Дост. шт</th><th class="r">Дост. ₽</th></tr></thead>
+    <tbody id="le-skuBody"></tbody></table></div></div>
+</div></section>
+<div class="divider"></div>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Оборачиваемость</span><h2 class="title">Остатки и потребность в поставке</h2>
+  <p class="subt">Центральный склад · за последние 30 дней</p></div>
+  <div class="chips" style="margin-bottom:22px">
+    <div class="chip"><b id="le-t-stock">0</b><s>Остаток, шт</s></div>
+    <div class="chip"><b id="le-t-sold">0</b><s>Продано за 30 дн</s></div>
+    <div class="chip"><b style="color:var(--red)" id="le-t-need">0</b><s>Дозаказать, шт</s></div>
+    <div class="chip"><b id="le-t-pos">0</b><s>Позиций к заказу</s></div>
+  </div>
+  <div class="card" style="padding:8px 0"><h4 style="font-size:15px;font-weight:800;margin:14px 20px 10px">Что дозаказать (по потребности)</h4>
+    <div class="scroller"><table class="tbl"><thead><tr><th>Товар</th><th>Бренд</th><th class="r">ADS</th><th class="r">Продано 30д</th><th class="r">Остаток</th><th class="r">Дозаказать</th></tr></thead><tbody id="le-restockBody"></tbody></table></div></div>
+</div></section>
+<div class="divider"></div>
+
+<section class="section"><div class="wrap">
+  <div><span class="eyebrow">Выводы</span><h2 class="title">Главное · Летуаль</h2>
+  <p class="subt">Ключевые наблюдения по магазину</p></div>
+  <div class="ins" id="le-insBox"></div>
+</div></section>
+</div><!-- /viewLE -->
+
+<footer><div class="wrap">
+  <b>Аналитика бизнеса · Wildberries 2026</b><br>
+  Источники: ежедневные отчёты WB, справочник себестоимости, остатки склада «Зеленовская».<br>
+  Маржа — валовая (продажи − себестоимость), без логистики и хранения WB.
+</div></footer>
+
+<script>
+const MONTHS={"july":{"period":"1–9 июля","unit":"июля","days":9,"tot":{"ordU":188,"ordR":362177.53,"salU":120,"salR":231167.53,"cogs":84100,"margin":147067.53,"buyout":63.8,"marginPct":63.6},"series":[{"d":1,"ordU":20,"ordR":48023.93,"salU":12,"salR":22440.84,"margin":12180.84,"marginPct":54.3,"buyout":60},{"d":2,"ordU":20,"ordR":35042.93,"salU":11,"salR":18532.66,"margin":11392.66,"marginPct":61.5,"buyout":55},{"d":3,"ordU":17,"ordR":33208.93,"salU":19,"salR":39478.59,"margin":29518.59,"marginPct":74.8,"buyout":111.8},{"d":4,"ordU":18,"ordR":46477.72,"salU":8,"salR":17720.66,"margin":7740.66,"marginPct":43.7,"buyout":44.4},{"d":5,"ordU":22,"ordR":34813.7,"salU":15,"salR":29299.46,"margin":17619.46,"marginPct":60.1,"buyout":68.2},{"d":6,"ordU":19,"ordR":37155.85,"salU":14,"salR":16888.94,"margin":12438.94,"marginPct":73.7,"buyout":73.7},{"d":7,"ordU":28,"ordR":49141.81,"salU":15,"salR":40341.36,"margin":22241.36,"marginPct":55.1,"buyout":53.6},{"d":8,"ordU":22,"ordR":32771.85,"salU":14,"salR":24332.09,"margin":17802.09,"marginPct":73.2,"buyout":63.6},{"d":9,"ordU":22,"ordR":45540.81,"salU":12,"salR":22132.93,"margin":16132.93,"marginPct":72.9,"buyout":54.5}],"brands":[{"name":"MOCHEQI","salU":52,"salR":110373.84,"margin":64213.84,"mpct":58.2},{"name":"MOCHEQI MUSK","salU":26,"salR":59989.84,"margin":37249.84,"mpct":62.1},{"name":"MAAT’ IMPERA","salU":32,"salR":43881.05,"margin":29841.05,"mpct":68},{"name":"MKSU","salU":3,"salR":8113,"margin":8113,"mpct":100},{"name":"","salU":3,"salR":4404.09,"margin":4404.09,"mpct":100},{"name":"KEZY","salU":2,"salR":2590.2,"margin":1550.2,"mpct":59.8},{"name":"Sinko Styling","salU":2,"salR":1815.51,"margin":1695.51,"mpct":93.4}],"skus":[{"art":"набормята+рис738","brand":"MOCHEQI","salU":5,"salR":24145.91,"margin":6145.91,"mpct":25.5},{"art":"наборши+аргана318","brand":"MOCHEQI MUSK","salU":5,"salR":14009.77,"margin":4259.77,"mpct":30.4},{"art":"авокадо 518","brand":"MOCHEQI","salU":4,"salR":12242.24,"margin":6402.24,"mpct":52.3},{"art":"сыворотка1","brand":"MAAT’ IMPERA","salU":9,"salR":12020.79,"margin":2840.79,"mpct":23.6},{"art":"мочекю280","brand":"MAAT’ IMPERA","salU":7,"salR":11521.54,"margin":11521.54,"mpct":100},{"art":"мочекюмаск","brand":"MOCHEQI MUSK","salU":5,"salR":8623.99,"margin":8623.99,"mpct":100},{"art":"кондиционер318","brand":"MOCHEQI","salU":3,"salR":7916.77,"margin":4976.77,"mpct":62.9},{"art":"мочекинабор318","brand":"MOCHEQI MUSK","salU":2,"salR":7214.47,"margin":7214.47,"mpct":100},{"art":"ИМБИРЬ 738","brand":"MOCHEQI","salU":2,"salR":7024.48,"margin":3904.48,"mpct":55.6},{"art":"набораргана738","brand":"MOCHEQI MUSK","salU":1,"salR":6289.45,"margin":3089.45,"mpct":49.1},{"art":"ПАНТЕНОЛ 500","brand":"MAAT’ IMPERA","salU":2,"salR":5751,"margin":3211,"mpct":55.8},{"art":"сыворотка1-3","brand":"MOCHEQI","salU":4,"salR":5593.7,"margin":5593.7,"mpct":100},{"art":"SPA-маска500","brand":"MOCHEQI MUSK","salU":2,"salR":5513.62,"margin":2473.62,"mpct":44.9},{"art":"конд аргана 518","brand":"MOCHEQI","salU":2,"salR":5306.23,"margin":2866.23,"mpct":54},{"art":"набораргана518","brand":"MOCHEQI MUSK","salU":1,"salR":3978.71,"margin":1578.71,"mpct":39.7}],"avgSalR":25685.28,"avgMargin":16340.84,"detailFrom":null,"noDetail":false,"forecast":{"base":{"ordR":1247500.38,"salR":796243.71,"salU":413.33,"margin":506565.94,"cogs":289677.78},"trend":0,"perDay":{"ordU":20.89,"ordR":40241.95,"salU":13.33,"salR":25685.28,"margin":16340.84,"cogs":9344.44}},"complete":false},"june":{"period":"1–30 июня","unit":"июня","days":30,"tot":{"ordU":545,"ordR":1049832.42,"salU":484,"salR":797649.48,"cogs":433165,"margin":364484.48,"buyout":88.8,"marginPct":45.7},"series":[{"d":1,"ordU":27,"ordR":64362.26,"salU":20,"salR":26511.06,"margin":13176.06,"marginPct":49.7,"buyout":74.1},{"d":2,"ordU":36,"ordR":54023.63,"salU":15,"salR":26214.7,"margin":12424.7,"marginPct":47.4,"buyout":41.7},{"d":3,"ordU":28,"ordR":51077.07,"salU":16,"salR":31131.34,"margin":15501.34,"marginPct":49.8,"buyout":57.1},{"d":4,"ordU":13,"ordR":26731.02,"salU":20,"salR":26422.36,"margin":14992.36,"marginPct":56.7,"buyout":153.8},{"d":5,"ordU":25,"ordR":44544.31,"salU":18,"salR":31718.42,"margin":12668.42,"marginPct":39.9,"buyout":72},{"d":6,"ordU":11,"ordR":20014.33,"salU":25,"salR":36913.3,"margin":19653.3,"marginPct":53.2,"buyout":227.3},{"d":7,"ordU":23,"ordR":54218.39,"salU":28,"salR":39791.64,"margin":15301.64,"marginPct":38.5,"buyout":121.7},{"d":8,"ordU":15,"ordR":29843.1,"salU":17,"salR":29284.92,"margin":15454.92,"marginPct":52.8,"buyout":113.3},{"d":9,"ordU":19,"ordR":23552.47,"salU":25,"salR":46455.42,"margin":15995.42,"marginPct":34.4,"buyout":131.6},{"d":10,"ordU":13,"ordR":28352.01,"salU":24,"salR":37055.63,"margin":17600.63,"marginPct":47.5,"buyout":184.6},{"d":11,"ordU":19,"ordR":40657.85,"salU":13,"salR":19942.22,"margin":9922.22,"marginPct":49.8,"buyout":68.4},{"d":12,"ordU":28,"ordR":53034.42,"salU":14,"salR":19797.14,"margin":9517.14,"marginPct":48.1,"buyout":50},{"d":13,"ordU":14,"ordR":29529.4,"salU":12,"salR":27095.1,"margin":13155.1,"marginPct":48.6,"buyout":85.7},{"d":14,"ordU":14,"ordR":21993.98,"salU":11,"salR":19518.65,"margin":5068.65,"marginPct":26,"buyout":78.6},{"d":15,"ordU":13,"ordR":21058.57,"salU":16,"salR":31407.51,"margin":10727.51,"marginPct":34.2,"buyout":123.1},{"d":16,"ordU":20,"ordR":31675.17,"salU":11,"salR":18955.44,"margin":8985.44,"marginPct":47.4,"buyout":55},{"d":17,"ordU":16,"ordR":28007.36,"salU":31,"salR":52746.77,"margin":26076.77,"marginPct":49.4,"buyout":193.8},{"d":18,"ordU":27,"ordR":47730.82,"salU":18,"salR":21933.59,"margin":5893.59,"marginPct":26.9,"buyout":66.7},{"d":19,"ordU":15,"ordR":28718,"salU":14,"salR":13970.57,"margin":8110.57,"marginPct":58.1,"buyout":93.3},{"d":20,"ordU":18,"ordR":39301.44,"salU":14,"salR":20489.7,"margin":8589.7,"marginPct":41.9,"buyout":77.8},{"d":21,"ordU":19,"ordR":34769.35,"salU":15,"salR":24951,"margin":11951,"marginPct":47.9,"buyout":78.9},{"d":22,"ordU":15,"ordR":28863.23,"salU":17,"salR":43360.63,"margin":21210.63,"marginPct":48.9,"buyout":113.3},{"d":23,"ordU":11,"ordR":23788.62,"salU":13,"salR":19026.89,"margin":8596.89,"marginPct":45.2,"buyout":118.2},{"d":24,"ordU":9,"ordR":20236.03,"salU":10,"salR":15348.51,"margin":6448.51,"marginPct":42,"buyout":111.1},{"d":25,"ordU":20,"ordR":44698.73,"salU":18,"salR":29467.73,"margin":14547.73,"marginPct":49.4,"buyout":90},{"d":26,"ordU":16,"ordR":36091.91,"salU":4,"salR":4114.16,"margin":1814.16,"marginPct":44.1,"buyout":25},{"d":27,"ordU":11,"ordR":18033.95,"salU":6,"salR":8985.13,"margin":2975.13,"marginPct":33.1,"buyout":54.5},{"d":28,"ordU":16,"ordR":40679.18,"salU":14,"salR":27435.53,"margin":12370.53,"marginPct":45.1,"buyout":87.5},{"d":29,"ordU":13,"ordR":24031.39,"salU":17,"salR":33740.37,"margin":18080.37,"marginPct":53.6,"buyout":130.8},{"d":30,"ordU":21,"ordR":40214.43,"salU":8,"salR":13864.05,"margin":7674.05,"marginPct":55.4,"buyout":38.1}],"brands":[{"name":"MOCHEQI","salU":248,"salR":428717.06,"margin":217007.06,"mpct":50.6},{"name":"MAAT’ IMPERA","salU":157,"salR":232405.47,"margin":107725.47,"mpct":46.4},{"name":"MOCHEQI MUSK","salU":68,"salR":120855.12,"margin":35535.12,"mpct":29.4},{"name":"KEZY","salU":6,"salR":7894.93,"margin":-1660.07,"mpct":-21},{"name":"","salU":3,"salR":5604.77,"margin":5604.77,"mpct":100},{"name":"MKSU","salU":2,"salR":2172.13,"margin":272.13,"mpct":12.5}],"skus":[{"art":"сыворотка1","brand":"MAAT’ IMPERA","salU":56,"salR":87343.64,"margin":30223.64,"mpct":34.6},{"art":"сыворотка1-1","brand":"MOCHEQI","salU":48,"salR":73175.12,"margin":35735.12,"mpct":48.8},{"art":"набормята+рис738","brand":"MOCHEQI","salU":15,"salR":53810.95,"margin":7910.95,"mpct":14.7},{"art":"мочекю280","brand":"MAAT’ IMPERA","salU":23,"salR":37393.65,"margin":15313.65,"mpct":41},{"art":"наборши+аргана318","brand":"MOCHEQI MUSK","salU":13,"salR":31273.48,"margin":6833.48,"mpct":21.9},{"art":"кондиционер318","brand":"MOCHEQI","salU":8,"salR":21907.04,"margin":14067.04,"mpct":64.2},{"art":"пантенол1000","brand":"MAAT’ IMPERA","salU":5,"salR":21845.06,"margin":10545.06,"mpct":48.3},{"art":"конд аргана 738","brand":"MOCHEQI","salU":6,"salR":21143.64,"margin":11783.64,"mpct":55.7},{"art":"сыворотка 2","brand":"MAAT’ IMPERA","salU":9,"salR":21106.76,"margin":13546.76,"mpct":64.2},{"art":"мочекюмаск","brand":"MOCHEQI MUSK","salU":14,"salR":19445.14,"margin":2645.14,"mpct":13.6},{"art":"сыворотка1-3","brand":"MOCHEQI","salU":13,"salR":18741.53,"margin":5481.53,"mpct":29.2},{"art":"авокадо 518","brand":"MOCHEQI","salU":6,"salR":18628.87,"margin":9868.87,"mpct":53},{"art":"конд518","brand":"MOCHEQI","salU":6,"salR":17926.32,"margin":10606.32,"mpct":59.2},{"art":"масло50мл","brand":"MOCHEQI","salU":9,"salR":17829.6,"margin":8529.6,"mpct":47.8},{"art":"набораргана518","brand":"MOCHEQI MUSK","salU":5,"salR":17113.13,"margin":5113.13,"mpct":29.9}],"avgSalR":26588.316,"avgMargin":12149.482666666667,"detailFrom":null,"noDetail":false,"forecast":{"base":{"ordR":1049832.42,"salR":797649.48,"salU":484,"margin":364484.48,"cogs":433165},"trend":-0.22452359985069648,"perDay":{"ordU":18.166666666666668,"ordR":34994.414,"salU":16.133333333333333,"salR":26588.316,"margin":12149.482666666667,"cogs":14438.833333333334}},"complete":false},"may":{"period":"1–31 мая","unit":"мая","days":31,"tot":{"ordU":686,"ordR":1316928.04,"salU":481,"salR":842750.27,"cogs":427280,"margin":415470.27,"buyout":70.1,"marginPct":49.3},"series":[{"d":1,"ordU":17,"ordR":26068.17,"salU":13,"salR":17739.39,"margin":10219.39,"marginPct":57.6,"buyout":76.5},{"d":2,"ordU":12,"ordR":20342.92,"salU":16,"salR":24817.9,"margin":10957.9,"marginPct":44.2,"buyout":133.3},{"d":3,"ordU":28,"ordR":61362.84,"salU":12,"salR":16315.61,"margin":7595.61,"marginPct":46.6,"buyout":42.9},{"d":4,"ordU":16,"ordR":42306.31,"salU":9,"salR":15365.44,"margin":6865.44,"marginPct":44.7,"buyout":56.3},{"d":5,"ordU":28,"ordR":55918.11,"salU":11,"salR":16919.85,"margin":8119.85,"marginPct":48,"buyout":39.3},{"d":6,"ordU":15,"ordR":23762.53,"salU":10,"salR":15827.87,"margin":6937.87,"marginPct":43.8,"buyout":66.7},{"d":7,"ordU":25,"ordR":45843.16,"salU":14,"salR":28986.77,"margin":13646.77,"marginPct":47.1,"buyout":56},{"d":8,"ordU":21,"ordR":48153.52,"salU":19,"salR":39027.42,"margin":20407.42,"marginPct":52.3,"buyout":90.5},{"d":9,"ordU":17,"ordR":32053.54,"salU":18,"salR":33995.64,"margin":14625.64,"marginPct":43,"buyout":105.9},{"d":10,"ordU":19,"ordR":41194.12,"salU":13,"salR":22884.31,"margin":7524.31,"marginPct":32.9,"buyout":68.4},{"d":11,"ordU":7,"ordR":15108.48,"salU":24,"salR":32832.67,"margin":15902.67,"marginPct":48.4,"buyout":342.9},{"d":12,"ordU":11,"ordR":21564.27,"salU":17,"salR":27197.2,"margin":14757.2,"marginPct":54.3,"buyout":154.5},{"d":13,"ordU":17,"ordR":32106.03,"salU":13,"salR":28901.42,"margin":9941.42,"marginPct":34.4,"buyout":76.5},{"d":14,"ordU":20,"ordR":37574.14,"salU":9,"salR":17308.59,"margin":8098.59,"marginPct":46.8,"buyout":45},{"d":15,"ordU":19,"ordR":38713.3,"salU":17,"salR":31863.87,"margin":21033.87,"marginPct":66,"buyout":89.5},{"d":16,"ordU":23,"ordR":44796.21,"salU":16,"salR":30743.31,"margin":22153.31,"marginPct":72.1,"buyout":69.6},{"d":17,"ordU":24,"ordR":49443.13,"salU":12,"salR":21207.68,"margin":14577.68,"marginPct":68.7,"buyout":50},{"d":18,"ordU":22,"ordR":46491.47,"salU":12,"salR":21743.1,"margin":16823.1,"marginPct":77.4,"buyout":54.5},{"d":19,"ordU":29,"ordR":57160.49,"salU":11,"salR":20117.52,"margin":15827.52,"marginPct":78.7,"buyout":37.9},{"d":20,"ordU":32,"ordR":58548.02,"salU":14,"salR":33251,"margin":17771,"marginPct":53.4,"buyout":43.8},{"d":21,"ordU":24,"ordR":57307.18,"salU":18,"salR":32950.9,"margin":14770.9,"marginPct":44.8,"buyout":75},{"d":22,"ordU":21,"ordR":46873.92,"salU":18,"salR":38565.26,"margin":16915.26,"marginPct":43.9,"buyout":85.7},{"d":23,"ordU":27,"ordR":41899.27,"salU":23,"salR":52620.45,"margin":23710.45,"marginPct":45.1,"buyout":85.2},{"d":24,"ordU":27,"ordR":50651,"salU":24,"salR":46974.36,"margin":20514.36,"marginPct":43.7,"buyout":88.9},{"d":25,"ordU":20,"ordR":35129.13,"salU":20,"salR":27584.99,"margin":9694.99,"marginPct":35.1,"buyout":100},{"d":26,"ordU":28,"ordR":41077.96,"salU":16,"salR":23343.17,"margin":9033.17,"marginPct":38.7,"buyout":57.1},{"d":27,"ordU":30,"ordR":57369.9,"salU":9,"salR":14556.28,"margin":4616.28,"marginPct":31.7,"buyout":30},{"d":28,"ordU":21,"ordR":35495.46,"salU":16,"salR":26223.45,"margin":11993.45,"marginPct":45.7,"buyout":76.2},{"d":29,"ordU":18,"ordR":30788.39,"salU":13,"salR":21249.68,"margin":12239.68,"marginPct":57.6,"buyout":72.2},{"d":30,"ordU":33,"ordR":56452.07,"salU":24,"salR":33433.8,"margin":15813.8,"marginPct":47.3,"buyout":72.7},{"d":31,"ordU":35,"ordR":65373,"salU":20,"salR":28201.37,"margin":12381.37,"marginPct":43.9,"buyout":57.1}],"brands":[{"name":"MOCHEQI","salU":89,"salR":172858.86,"margin":84078.86,"mpct":48.6},{"name":"MAAT’ IMPERA","salU":94,"salR":138589.47,"margin":61589.47,"mpct":44.4},{"name":"MOCHEQI MUSK","salU":31,"salR":66139.21,"margin":24059.21,"mpct":36.4},{"name":"KEZY","salU":1,"salR":1367.17,"margin":-272.83,"mpct":-20},{"name":"MKSU","salU":0,"salR":0,"margin":0,"mpct":0}],"skus":[{"art":"сыворотка1","brand":"MAAT’ IMPERA","salU":51,"salR":82915.58,"margin":30895.58,"mpct":37.3},{"art":"набормята+рис738","brand":"MOCHEQI","salU":8,"salR":32145.83,"margin":4605.83,"mpct":14.3},{"art":"сыворотка1-1","brand":"MOCHEQI","salU":15,"salR":23869.54,"margin":12169.54,"mpct":51},{"art":"мочекю280","brand":"MAAT’ IMPERA","salU":10,"salR":16016.73,"margin":6416.73,"mpct":40.1},{"art":"наборши+аргана318","brand":"MOCHEQI MUSK","salU":6,"salR":14575.86,"margin":3295.86,"mpct":22.6},{"art":"сыворотка 2","brand":"MAAT’ IMPERA","salU":6,"salR":12628.76,"margin":7588.76,"mpct":60.1},{"art":"мочекюмаск","brand":"MOCHEQI MUSK","salU":10,"salR":12565.28,"margin":565.28,"mpct":4.5},{"art":"набораргана518","brand":"MOCHEQI MUSK","salU":3,"salR":11995.23,"margin":4795.23,"mpct":40},{"art":"конд738","brand":"MOCHEQI","salU":3,"salR":11126.71,"margin":6446.71,"mpct":57.9},{"art":"ИМБИРЬ 738","brand":"MOCHEQI","salU":3,"salR":10984.86,"margin":6304.86,"mpct":57.4},{"art":"конд аргана 518","brand":"MOCHEQI","salU":3,"salR":9937.63,"margin":6277.63,"mpct":63.2},{"art":"пантенол1000","brand":"MAAT’ IMPERA","salU":2,"salR":8745.52,"margin":4225.52,"mpct":48.3},{"art":"мочекинабор318","brand":"MOCHEQI MUSK","salU":2,"salR":8105.77,"margin":8105.77,"mpct":100},{"art":"сыворотка1-3","brand":"MOCHEQI","salU":5,"salR":8036.34,"margin":2936.34,"mpct":36.5},{"art":"ши 318","brand":"MOCHEQI","salU":3,"salR":7798.14,"margin":4888.14,"mpct":62.7}],"avgSalR":27185.49258064516,"avgMargin":13402.26677419355,"detailFrom":20,"noDetail":false,"complete":true},"apr":{"period":"1–30 апреля","unit":"апреля","days":30,"tot":{"ordU":406,"ordR":675435.06,"salU":361,"salR":554069.45,"cogs":294714.43,"margin":259355.02,"buyout":88.9,"marginPct":46.8},"series":[{"d":1,"ordU":13,"ordR":19949.32,"salU":13,"salR":15660.53,"margin":7444.29,"marginPct":47.5,"buyout":100},{"d":2,"ordU":9,"ordR":6358,"salU":11,"salR":14697,"margin":8328.62,"marginPct":56.7,"buyout":122.2},{"d":3,"ordU":17,"ordR":28311.53,"salU":18,"salR":28457.32,"margin":13085.31,"marginPct":46,"buyout":105.9},{"d":4,"ordU":20,"ordR":25200.48,"salU":10,"salR":13148.36,"margin":7407.97,"marginPct":56.3,"buyout":50},{"d":5,"ordU":15,"ordR":22652.85,"salU":19,"salR":33210.89,"margin":14612,"marginPct":44,"buyout":126.7},{"d":6,"ordU":5,"ordR":11021.5,"salU":13,"salR":13671.5,"margin":4603.27,"marginPct":33.7,"buyout":260},{"d":7,"ordU":11,"ordR":15909.14,"salU":13,"salR":15297.72,"margin":6387.85,"marginPct":41.8,"buyout":118.2},{"d":8,"ordU":19,"ordR":28860.66,"salU":15,"salR":21979.36,"margin":9469.49,"marginPct":43.1,"buyout":78.9},{"d":9,"ordU":14,"ordR":31095,"salU":6,"salR":13729.93,"margin":4140.06,"marginPct":30.2,"buyout":42.9},{"d":10,"ordU":15,"ordR":31173,"salU":11,"salR":15282,"margin":6432.32,"marginPct":42.1,"buyout":73.3},{"d":11,"ordU":8,"ordR":13744,"salU":8,"salR":12736,"margin":4766.23,"marginPct":37.4,"buyout":100},{"d":12,"ordU":14,"ordR":39952,"salU":14,"salR":12425,"margin":5114.97,"marginPct":41.2,"buyout":100},{"d":13,"ordU":12,"ordR":25465.46,"salU":12,"salR":17318.42,"margin":7728.55,"marginPct":44.6,"buyout":100},{"d":14,"ordU":11,"ordR":19413.54,"salU":14,"salR":23835.37,"margin":10065.5,"marginPct":42.2,"buyout":127.3},{"d":15,"ordU":16,"ordR":22426.09,"salU":14,"salR":24518.7,"margin":11198.83,"marginPct":45.7,"buyout":87.5},{"d":16,"ordU":15,"ordR":29058.44,"salU":15,"salR":19944.26,"margin":11054.39,"marginPct":55.4,"buyout":100},{"d":17,"ordU":20,"ordR":38630.58,"salU":9,"salR":18136.88,"margin":8656.88,"marginPct":47.7,"buyout":45},{"d":18,"ordU":8,"ordR":4725,"salU":9,"salR":13301.28,"margin":8281.28,"marginPct":62.3,"buyout":112.5},{"d":19,"ordU":15,"ordR":29927.83,"salU":18,"salR":39584.18,"margin":19284.18,"marginPct":48.7,"buyout":120},{"d":20,"ordU":8,"ordR":13947.29,"salU":6,"salR":6968.02,"margin":4218.02,"marginPct":60.5,"buyout":75},{"d":21,"ordU":7,"ordR":9443.71,"salU":12,"salR":28553.5,"margin":14523.5,"marginPct":50.9,"buyout":171.4},{"d":22,"ordU":7,"ordR":9796.61,"salU":13,"salR":14483.57,"margin":7963.57,"marginPct":55,"buyout":185.7},{"d":23,"ordU":20,"ordR":36922.48,"salU":6,"salR":14662.15,"margin":6822.15,"marginPct":46.5,"buyout":30},{"d":24,"ordU":13,"ordR":12448.1,"salU":10,"salR":12583.99,"margin":6003.99,"marginPct":47.7,"buyout":76.9},{"d":25,"ordU":17,"ordR":21284.96,"salU":5,"salR":10141.4,"margin":3381.4,"marginPct":33.3,"buyout":29.4},{"d":26,"ordU":12,"ordR":16394.64,"salU":11,"salR":13676.83,"margin":8596.83,"marginPct":62.9,"buyout":91.7},{"d":27,"ordU":17,"ordR":32957.43,"salU":16,"salR":24098.09,"margin":12618.09,"marginPct":52.4,"buyout":94.1},{"d":28,"ordU":16,"ordR":25948.3,"salU":13,"salR":11718.34,"margin":3915.06,"marginPct":33.4,"buyout":81.3},{"d":29,"ordU":16,"ordR":25300.57,"salU":11,"salR":23193.35,"margin":11173.35,"marginPct":48.2,"buyout":68.8},{"d":30,"ordU":16,"ordR":27116.55,"salU":16,"salR":27055.51,"margin":12077.07,"marginPct":44.6,"buyout":100}],"brands":[],"skus":[],"avgSalR":18468.981666666667,"avgMargin":8645.167333333333,"detailFrom":null,"noDetail":true,"complete":true}};
+const STOCKS={"units":1291,"val":204280,"inStock":104,"zero":32,"total":136,"risk":6,"cats":[{"cat":"Косметические наборы для ухода","units":142,"val":60710,"sku":12},{"cat":"Маски косметические","units":230,"val":43010,"sku":9},{"cat":"Шампуни","units":308,"val":37120,"sku":67},{"cat":"Сыворотки","units":297,"val":32750,"sku":14},{"cat":"Кондиционеры для волос","units":65,"val":29760,"sku":17},{"cat":"Масла","units":3,"val":930,"sku":5},{"cat":"Спреи","units":245,"val":0,"sku":11},{"cat":"Флюиды","units":1,"val":0,"sku":1}],"lowRisk":[{"art":"мочекюмаск","qty":1,"sold":14,"cover":2},{"art":"авокадо 518","qty":1,"sold":7,"cover":4},{"art":"масло50мл","qty":1,"sold":7,"cover":4},{"art":"наборши+аргана318","qty":2,"sold":14,"cover":4},{"art":"сыворотка1-1","qty":9,"sold":59,"cover":5},{"art":"мочекю45","qty":2,"sold":9,"cover":7},{"art":"конд аргана 318","qty":2,"sold":5,"cover":12}]};
+const GROWTH={"coreLost":48327,"totalLost":192487,"zeroCount":7,"lossSum":-34876,"frozen":43680,"deadCount":62,"potentialMin":83203,"potentialMax":227363,"topDeficit":[{"art":"сыворотка1-1","name":"Сыворотка-спрей термозащита для волос, 150 мл","vel":59,"stock":10,"cover":5,"lost":55854,"order":176},{"art":"мочекю280","name":"Крем для волос Miracle Wave MUSK, 280 мл","vel":21,"stock":1,"cover":1,"lost":24479,"order":66},{"art":"сыворотка1-3","name":"Спрей-сыворотка термозащита для волос, 250 мл","vel":10,"stock":0,"cover":0,"lost":11603,"order":34},{"art":"мочекюмаск","name":"Шампунь для волос Ice Cool MUSK с мятой, 318 мл","vel":14,"stock":3,"cover":6,"lost":10588,"order":43},{"art":"сыворотка1","name":"Сыворотка-спрей для волос термозащита блеск разглажи","vel":64,"stock":0,"cover":0,"lost":10418,"order":203},{"art":"мксу-оранж1","name":"Шампунь для объема, питания и восстановления волос 7","vel":9,"stock":0,"cover":0,"lost":8884,"order":29},{"art":"кондиционер пробники","name":"Пробники кондиционера с коллагеном и рисом 5×10 мл","vel":27,"stock":0,"cover":0,"lost":8190,"order":87},{"art":"авокадо 518","name":"Кондиционер-маска с экстрактом авокадо 518 мл","vel":7,"stock":1,"cover":5,"lost":6996,"order":20}],"losers":[{"art":"набормята+рис738","name":"Подарочный набор: шампунь и кондиционер для волос 73","perUnit":-1213,"monthlyLoss":-25315,"marginPct":-19},{"art":"наборши+аргана318","name":"Подарочный набор Шампунь и кондиционер с маслом ши и","perUnit":-433,"monthlyLoss":-6213,"marginPct":-10},{"art":"пантенол 500","name":"Маска Пантенол 500 мл для восстановления и увлажнени","perUnit":-607,"monthlyLoss":-1583,"marginPct":-24},{"art":"18водном","name":"Несмываемая маска-спрей для волос 18 в 1 восстановле","perUnit":-412,"monthlyLoss":-1075,"marginPct":-13},{"art":"авокадо375","name":"Шампунь Avocado 375 мл для сухих и повреждённых воло","perUnit":-529,"monthlyLoss":-690,"marginPct":-29}]};
+let CUR='july';
+const M=()=>MONTHS[CUR];
+const fmt=n=>Math.round(n).toLocaleString('ru-RU');
+const dec1=n=>(Math.round(n*10)/10).toString().replace('.',',');
+const byId=id=>document.getElementById(id);
+
+/* count-up helper */
+function cu(el,target,dec,suf){
+  if(!el)return; suf=suf||''; dec=dec||0;
+  const dur=900,t0=performance.now(),from=el._v||0;
+  const token=(el._t||0)+1; el._t=token;
+  function step(now){
+    if(el._t!==token) return; // отменено более новым вызовом
+    let p=Math.min((now-t0)/dur,1);p=1-Math.pow(1-p,3);const v=from+(target-from)*p; el._v=v;
+    el.textContent=(dec?v.toFixed(dec).replace('.',','):Math.round(v).toLocaleString('ru-RU'))+suf;
+    if(p<1)requestAnimationFrame(step); else el._v=target;
+  } requestAnimationFrame(step);
+}
+
+const LABELS={july:'Июль',june:'Июнь',may:'Май',apr:'Апрель'};
+/* comparison (static, 3 months) */
+(function(){
+  const order=['apr','may','june','july'];
+  function card(title,getf,fmtf){
+    const rows=order.map(k=>`<div class="row"><s>${LABELS[k]}</s><b>${fmtf(getf(MONTHS[k]))}</b></div>`).join('');
+    const a=getf(MONTHS.apr), j=getf(MONTHS.july), d=a?(j-a)/a*100:0;
+    const cls=d>=0?'up':'down', arrow=d>=0?'▲':'▼';
+    return `<div class="cmpc"><div class="lab">${title}</div>${rows}<div class="delta ${cls}">${arrow} ${Math.abs(d).toFixed(0)}% июль к апрелю</div></div>`;
+  }
+  byId('cmpBox').innerHTML='<h3><i></i>Сравнение Апрель / Май / Июнь / Июль · среднее за день</h3>'+
+    '<div class="cmpgrid">'+
+    card('Продажи / день', m=>m.avgSalR, v=>fmt(v)+' ₽')+
+    card('Маржа / день', m=>m.avgMargin, v=>fmt(v)+' ₽')+
+    card('Маржинальность', m=>m.tot.marginPct, v=>dec1(v)+'%')+
+    card('% выкупа', m=>m.tot.buyout, v=>dec1(v)+'%')+
+    '</div>';
+})();
+
+/* render month-specific content */
+function renderMonth(){
+  const d=M(), t=d.tot;
+  const monthName = LABELS[CUR];
+  byId('hMonth').textContent=monthName+' 2026';
+  byId('hLead').textContent='Период '+d.period+(d.complete?' (месяц завершён)':' · отчёт на данный момент')+': заказы, продажи, маржа и динамика.';
+  document.title='Аналитика бизнеса · '+monthName+' 2026';
+  // hero mini + KPI
+  cu(byId('hm-salR'),t.salR,0,' ₽'); cu(byId('hm-margin'),t.margin,0,' ₽'); cu(byId('hm-buyout'),t.buyout,1,'%');
+  cu(byId('k-ordR'),t.ordR,0,' ₽'); byId('k-ordRs').textContent=t.ordU+' шт · за вычетом комиссии WB';
+  cu(byId('k-salR'),t.salR,0,' ₽'); byId('k-salRs').textContent=t.salU+' шт · к перечислению';
+  cu(byId('k-margin'),t.margin,0,' ₽'); byId('k-margins').textContent=dec1(t.marginPct)+'% маржинальность';
+  cu(byId('k-buyout'),t.buyout,1,'%');
+  cu(byId('k-cogs'),t.cogs,0,' ₽');
+  cu(byId('k-check'),Math.round(t.salR/t.salU),0,' ₽');
+  cu(byId('k-perday'),Math.round(d.avgSalR),0,' ₽'); byId('k-perdays').textContent=dec1(t.salU/d.days)+' шт/день';
+  cu(byId('k-mday'),Math.round(d.avgMargin),0,' ₽');
+  byId('dynSub').textContent='Каждый из '+d.days+' дней '+d.unit+' · ведите пальцем по графику';
+  // brands
+  renderBrands(); renderSKU(); buildChart(); renderInsights();
+  // forecast only for june
+  const showF = !d.complete;
+  byId('forecastSection').style.display=showF?'':'none';
+  byId('divForecast').style.display=showF?'':'none';
+  // toggle active
+  byId('btn-july').classList.toggle('on',CUR==='july');
+  byId('btn-june').classList.toggle('on',CUR==='june');
+  byId('btn-may').classList.toggle('on',CUR==='may');
+  byId('btn-apr').classList.toggle('on',CUR==='apr');
+  renderForecast();
+}
+function renderForecast(){
+  const d=M(); if(d.complete||!d.forecast){return;}
+  const f=d.forecast.base;
+  byId('fc-base').textContent=fmt(f.salR)+' ₽';
+  byId('fc-bases').textContent='маржа ≈ '+fmt(f.margin)+' ₽ · '+f.salU+' шт';
+  byId('fc-pess').textContent=fmt(f.salR*0.85)+' ₽';
+  byId('fc-pesss').textContent='маржа ≈ '+fmt(f.margin*0.85)+' ₽';
+  byId('fc-opt').textContent=fmt(f.salR*1.15)+' ₽';
+  byId('fc-opts').textContent='маржа ≈ '+fmt(f.margin*1.15)+' ₽';
+  const dn=d.days;
+  byId('fc-note').textContent = dn<5
+    ? ('Предварительный прогноз: данные пока за '+dn+' дн. '+d.unit+'. Расчёт = показатели за день × 31. Цифры уточнятся по мере накопления дней месяца.')
+    : ('Прогноз = средние показатели за день ('+d.period+') × 30 дней. Главный ограничитель — наличие товара на складе.');
+}
+function setMonth(m){ if(m===CUR)return; CUR=m; renderMonth(); }
+
+function renderBrands(){
+  const d=M();
+  if(!d.brands.length){
+    byId('brandList').innerHTML='<div style="padding:16px 0;color:var(--sub);font-size:14px">За '+LABELS[CUR]+' данных нет.</div>';
+    byId('brandSub').textContent='Детализация по брендам за этот период недоступна';
+    return;
+  }
+  const maxR=Math.max(...d.brands.map(b=>b.salR));
+  let h=''; d.brands.forEach(b=>{const neg=b.margin<0?'class="neg"':'';
+    h+=`<div class="brow"><div class="bname">${b.name}</div>
+      <div class="bbarwrap"><div class="bbar" data-w="${(b.salR/maxR*100).toFixed(1)}"></div></div>
+      <div class="bval">${fmt(b.salR)} ₽</div>
+      <div class="bpct" ${neg}>${b.mpct>0?'+':''}${dec1(b.mpct)}%</div></div>`;});
+  byId('brandList').innerHTML=h;
+  byId('brandSub').textContent = d.detailFrom? ('Детализация по брендам — за '+d.detailFrom+'–31 мая (за 1–19 детальных данных нет)') : 'Вклад каждого бренда в выручку и маржинальность';
+  setTimeout(()=>document.querySelectorAll('.bbar').forEach(b=>b.style.width=b.dataset.w+'%'),50);
+}
+function renderSKU(){
+  const d=M();
+  if(!d.skus.length){
+    byId('skuBody').innerHTML='<tr><td colspan="6" style="padding:16px 10px;color:var(--sub)">За '+LABELS[CUR]+' данных нет.</td></tr>';
+    byId('skuSub').textContent='Детализация по товарам за этот период недоступна';
+    return;
+  }
+  let s='';
+  d.skus.forEach(x=>{const neg=x.margin<0?'class="neg"':'';
+    s+=`<tr><td style="font-weight:600">${x.art}</td><td style="color:#64748B">${x.brand}</td><td class="r">${x.salU}</td><td class="r">${fmt(x.salR)} ₽</td><td class="r" ${neg}>${fmt(x.margin)} ₽</td><td class="r" ${neg}>${dec1(x.mpct)}%</td></tr>`;});
+  byId('skuBody').innerHTML=s;
+  byId('skuSub').textContent = d.detailFrom? ('Лидеры продаж · данные за '+d.detailFrom+'–31 мая') : 'Лидеры продаж и их маржинальность';
+}
+function renderInsights(){
+  const d=M();
+  let cards;
+  if(CUR==='july'){
+    cards=[['var(--green)','Старт июля','Первый день июля: продажи '+fmt(d.tot.salR)+' ₽, маржа '+dec1(d.tot.marginPct)+'% — маржинальность выше среднего по июню.'],
+      ['var(--purple)','Выкуп '+dec1(d.tot.buyout)+'%','За день выкуплено '+d.tot.salU+' из '+d.tot.ordU+' заказанных шт.'],
+      ['var(--red)','Дефицит остатков','Сыворотка-1 и топ-позиции почти кончились (покрытие 1–5 дней) — без поставки продажи упрутся в наличие.'],
+      ['var(--orange)','Данные копятся','Вкладка обновляется по мере поступления дневных отчётов WB за июль.']];
+  } else if(CUR==='june'){
+    cards=[['var(--green)','Драйверы выручки','MOCHEQI и MAAT\' IMPERA дают основную прибыль — приоритет в закупке.'],
+      ['var(--purple)','Высокий выкуп — '+dec1(d.tot.buyout)+'%','Спрос подтверждённый, риск возвратов низкий.'],
+      ['var(--red)','Дефицит остатков','Топ-сыворотка почти кончилась — без поставки продажи упрутся в наличие.'],
+      ['var(--orange)','Убыточные позиции','KEZY в минусе (−18%), реклама сливала бюджет — приостановлена.']];
+  } else if(CUR==='may'){
+    cards=[['var(--blue)','Маржинальность '+dec1(d.tot.marginPct)+'%','В мае маржа была выше — товарный микс и цены работали в плюс.'],
+      ['var(--purple)','Выкуп '+dec1(d.tot.buyout)+'%','Ниже июньского — больше заказов не доходило до выкупа.'],
+      ['var(--teal)','Полный месяц','Май посчитан за все 31 день (1–19 из таблицы, 20–31 из отчётов WB).'],
+      ['var(--orange)','Переход на новый бренд','Эта же аналитика подключится к новому бренду — сравнение продолжится.']];
+  } else {
+    cards=[['var(--blue)','Маржинальность '+dec1(d.tot.marginPct)+'%','Апрель — стабильный месяц по марже, близко к июньскому уровню.'],
+      ['var(--purple)','Выкуп '+dec1(d.tot.buyout)+'%','Высокий выкуп — спрос подтверждённый.'],
+      ['var(--teal)','Полный месяц','Апрель посчитан за все 30 дней (готовые дневные итоги).'],
+      ['var(--orange)','Точка отсчёта','Апрель — база для сравнения динамики апрель → май → июнь.']];
+  }
+  byId('insTitle').textContent='Главное · '+LABELS[CUR];
+  byId('insSub').textContent='Ключевые наблюдения за период';
+  byId('insBox').innerHTML=cards.map(c=>`<div class="inscard" style="--ac:${c[0]}"><h4>${c[1]}</h4><p>${c[2]}</p></div>`).join('');
+}
+
+/* day chart */
+function buildChart(){
+  const d=M().series, unit=M().unit, W=820,H=320,padL=44,padR=10,padT=16,padB=28;
+  const innerW=W-padL-padR, innerH=H-padT-padB;
+  const maxRaw=Math.max(...d.map(x=>x.salR)), stp=10000, maxV=Math.ceil(maxRaw/stp)*stp;
+  const n=d.length, gap=innerW/n, bw=Math.min(gap*0.5,30);
+  const y=v=>padT+innerH-(v/maxV)*innerH, xc=i=>padL+gap*i+gap/2;
+  let grid='',bars='',line='',dots='',labels='',hits='';
+  for(let g=0;g<=maxV;g+=20000){const gy=y(g).toFixed(1);
+    grid+=`<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="#EDF1F7"/>`;
+    grid+=`<text x="${padL-8}" y="${(+gy+4).toFixed(1)}" text-anchor="end" font-size="11" fill="#94A3B8">${g/1000}к</text>`;}
+  d.forEach((x,i)=>{const cx=xc(i),bh=(x.salR/maxV)*innerH,top=y(x.salR);
+    bars+=`<rect class="bar" data-i="${i}" x="${(cx-bw/2).toFixed(1)}" y="${(padT+innerH)}" width="${bw.toFixed(1)}" height="0" rx="3" fill="url(#bg)"><animate attributeName="height" to="${bh.toFixed(1)}" dur="0.7s" begin="${(i*0.03).toFixed(2)}s" fill="freeze"/><animate attributeName="y" to="${top.toFixed(1)}" dur="0.7s" begin="${(i*0.03).toFixed(2)}s" fill="freeze"/></rect>`;
+    line+=`${i?'L':'M'}${cx.toFixed(1)},${y(x.margin).toFixed(1)} `;
+    dots+=`<circle class="dot" data-i="${i}" cx="${cx.toFixed(1)}" cy="${y(x.margin).toFixed(1)}" r="3.4" fill="#059669" stroke="#fff" stroke-width="1.5" opacity="0"><animate attributeName="opacity" to="1" dur="0.4s" begin="${(0.4+i*0.03).toFixed(2)}s" fill="freeze"/></circle>`;
+    labels+=`<text x="${cx.toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="11" fill="#94A3B8">${x.d}</text>`;
+    hits+=`<rect class="hit" data-i="${i}" x="${(padL+gap*i).toFixed(1)}" y="${padT}" width="${gap.toFixed(1)}" height="${innerH}" fill="transparent"/>`;});
+  const pl=3000;
+  const svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Продажи и маржа по дням">
+    <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs>
+    ${grid}${bars}
+    <path d="${line}" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${pl}" stroke-dashoffset="${pl}"><animate attributeName="stroke-dashoffset" to="0" dur="1.2s" begin="0.3s" fill="freeze"/></path>
+    ${dots}${labels}${hits}</svg>`;
+  const cont=byId('dayChart'); cont.innerHTML=svg;
+  const svgEl=cont.querySelector('svg');
+  let tip=cont.querySelector('.tip'); if(!tip){tip=document.createElement('div');tip.className='tip';cont.appendChild(tip);}
+  const bars2=[...cont.querySelectorAll('.bar')],dots2=[...cont.querySelectorAll('.dot')];
+  const rd={day:byId('rdDay'),sales:byId('rdSales'),margin:byId('rdMargin'),orders:byId('rdOrders'),buyout:byId('rdBuyout')};
+  let active=-1;
+  function paint(i){bars2.forEach((b,j)=>b.setAttribute('fill',j===i?'#1E40AF':'url(#bg)'));dots2.forEach((dt,j)=>dt.setAttribute('r',j===i?'5.6':'3.4'));}
+  function readout(i){const x=d[i];rd.day.textContent=x.d+' '+unit;
+    rd.sales.textContent=fmt(x.salR)+' ₽ · '+x.salU+' шт';
+    rd.margin.textContent=fmt(x.margin)+' ₽ · '+dec1(x.marginPct)+'%';
+    rd.orders.textContent=fmt(x.ordR)+' ₽ · '+x.ordU+' шт';
+    rd.buyout.textContent=dec1(x.buyout)+'%';}
+  function tooltip(i){const x=d[i];
+    tip.innerHTML=`<div class="th">${x.d} ${unit}</div>
+      <div class="tr"><s>Продажи</s><b class="tb">${fmt(x.salR)} ₽ · ${x.salU} шт</b></div>
+      <div class="tr"><s>Маржа</s><b class="tg">${fmt(x.margin)} ₽ · ${dec1(x.marginPct)}%</b></div>
+      <div class="tr"><s>Заказы</s><b>${fmt(x.ordR)} ₽ · ${x.ordU} шт</b></div>
+      <div class="tr"><s>Выкуп</s><b>${dec1(x.buyout)}%</b></div>`;
+    const box=cont.getBoundingClientRect(),cx=(padL+gap*i+gap/2)/W*box.width;
+    tip.style.left='-9999px';tip.style.top='6px';const tw=tip.offsetWidth;
+    tip.style.left=Math.max(tw/2+6,Math.min(box.width-tw/2-6,cx))+'px';tip.classList.add('on');}
+  function select(i,wt){i=Math.max(0,Math.min(n-1,i));if(i!==active){active=i;paint(i);readout(i);}if(wt)tooltip(i);}
+  function idx(e){const box=svgEl.getBoundingClientRect();return Math.max(0,Math.min(n-1,Math.floor(((e.clientX-box.left)/box.width*W-padL)/gap)));}
+  let pressed=false;
+  cont.onpointerdown=e=>{pressed=true;try{cont.setPointerCapture(e.pointerId);}catch(_){}select(idx(e),e.pointerType!=='touch');};
+  cont.onpointermove=e=>{if(pressed||e.pointerType==='mouse')select(idx(e),e.pointerType==='mouse');};
+  cont.onpointerup=()=>{pressed=false;}; cont.onpointercancel=()=>{pressed=false;};
+  cont.onpointerleave=e=>{if(e.pointerType==='mouse')tip.classList.remove('on');};
+  byId('rdPrev').onclick=()=>select(active-1,false);
+  byId('rdNext').onclick=()=>select(active+1,false);
+  select(n-1,false);
+}
+
+/* stocks (current, once) */
+(function(){
+  cu(byId('st-units'),STOCKS.units); cu(byId('st-val'),STOCKS.val,0,' ₽'); cu(byId('st-in'),STOCKS.inStock); cu(byId('st-risk'),STOCKS.risk);
+  const cs=STOCKS.cats.slice().sort((a,b)=>b.val-a.val),mx=Math.max(...cs.map(c=>c.val));
+  const cols=['#2563EB','#0E8F8E','#7C3AED','#EA7317','#059669','#DC2626','#0891B2','#9333EA'];
+  byId('catList').innerHTML=cs.map((c,i)=>`<div class="catrow"><div class="catname">${c.cat}</div><div class="catbar"><div class="catbarf" data-w="${(c.val/mx*100).toFixed(1)}" style="background:${cols[i%8]}"></div></div><div class="catval">${fmt(c.val)} ₽</div></div>`).join('');
+  setTimeout(()=>document.querySelectorAll('.catbarf').forEach(b=>b.style.width=b.dataset.w+'%'),300);
+  byId('riskBody').innerHTML=STOCKS.lowRisk.map(x=>{const cls=x.cover<=3?'p-red':x.cover<=7?'p-org':'p-amb';
+    return `<tr><td>${x.art}</td><td class="r">${x.qty}</td><td class="r">${x.sold}</td><td class="r"><span class="pill ${cls}">${x.cover} дн</span></td></tr>`;}).join('');
+})();
+
+/* ===== month comparison (interactive) ===== */
+const METRICS=[
+  {lab:'Продажи', pct:false, color:'#2563EB', get:(m,day)=>day?m.avgSalR:m.tot.salR},
+  {lab:'Маржа', pct:false, color:'#059669', get:(m,day)=>day?m.avgMargin:m.tot.margin},
+  {lab:'Заказы', pct:false, color:'#0E8F8E', get:(m,day)=>day?m.tot.ordR/m.days:m.tot.ordR},
+  {lab:'Маржа %', pct:true, color:'#7C3AED', get:m=>m.tot.marginPct},
+  {lab:'Выкуп %', pct:true, color:'#EA7317', get:m=>m.tot.buyout}
+];
+const CORDER=['apr','may','june','july'], CLAB=['Апрель','Май','Июнь','Июль'];
+let curMet=0, curDay=true;
+function barChart(vals,color,fmtf){
+  const W=640,H=250,padT=34,padB=36,padX=14;
+  const innerH=H-padT-padB, n=vals.length, slot=(W-padX*2)/n, bw=Math.min(slot*0.46,96);
+  const max=Math.max(...vals)||1;
+  let s='';
+  vals.forEach((v,i)=>{
+    const cx=padX+slot*i+slot/2, bh=Math.max((v/max)*innerH,2), top=padT+innerH-bh;
+    s+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${padT+innerH}" width="${bw.toFixed(1)}" height="0" rx="7" fill="${color}"><animate attributeName="height" to="${bh.toFixed(1)}" dur="0.7s" begin="${(i*0.08).toFixed(2)}s" fill="freeze" calcMode="spline" keySplines="0.2 0.7 0.2 1" keyTimes="0;1" values="0;${bh.toFixed(1)}"/><animate attributeName="y" to="${top.toFixed(1)}" dur="0.7s" begin="${(i*0.08).toFixed(2)}s" fill="freeze" calcMode="spline" keySplines="0.2 0.7 0.2 1" keyTimes="0;1" values="${padT+innerH};${top.toFixed(1)}"/></rect>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(top-10).toFixed(1)}" text-anchor="middle" font-size="17" font-weight="800" fill="#1E293B" opacity="0"><animate attributeName="opacity" to="1" dur="0.4s" begin="${(0.45+i*0.08).toFixed(2)}s" fill="freeze"/>${fmtf(v)}</text>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${H-12}" text-anchor="middle" font-size="15" font-weight="700" fill="#64748B">${CLAB[i]}</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Сравнение месяцев">${s}</svg>`;
+}
+function renderCompare(){
+  const m=METRICS[curMet], day=m.pct?false:curDay;
+  const vals=CORDER.map(k=>m.get(MONTHS[k],day));
+  const fmtf=m.pct? (v=>dec1(v)+'%') : (v=>fmt(v)+' ₽');
+  byId('cmpChart').innerHTML=barChart(vals,m.color,fmtf);
+  [...byId('metSel').children].forEach((b,i)=>b.classList.toggle('on',i===curMet));
+  byId('modeSel').style.visibility=m.pct?'hidden':'visible';
+  [...byId('modeSel').children].forEach(b=>b.classList.toggle('on',(b.dataset.m==='day')===curDay));
+}
+byId('metSel').innerHTML=METRICS.map(m=>'<button>'+m.lab+'</button>').join('');
+[...byId('metSel').children].forEach((b,i)=>b.onclick=()=>{curMet=i;renderCompare();});
+[...byId('modeSel').children].forEach(b=>b.onclick=()=>{curDay=b.dataset.m==='day';renderCompare();});
+(function(){
+  const rows=[
+    ['Заказы, шт', m=>m.tot.ordU, v=>fmt(v)],
+    ['Заказы, ₽', m=>m.tot.ordR, v=>fmt(v)+' ₽'],
+    ['Продажи, шт', m=>m.tot.salU, v=>fmt(v)],
+    ['Продажи, ₽', m=>m.tot.salR, v=>fmt(v)+' ₽'],
+    ['Себестоимость, ₽', m=>m.tot.cogs, v=>fmt(v)+' ₽'],
+    ['Маржа, ₽', m=>m.tot.margin, v=>fmt(v)+' ₽'],
+    ['Маржа, %', m=>m.tot.marginPct, v=>dec1(v)+'%'],
+    ['% выкупа', m=>m.tot.buyout, v=>dec1(v)+'%'],
+    ['Дней в периоде', m=>m.days, v=>fmt(v)],
+    ['Продажи / день, ₽', m=>m.avgSalR, v=>fmt(v)+' ₽'],
+    ['Маржа / день, ₽', m=>m.avgMargin, v=>fmt(v)+' ₽']
+  ];
+  let h='<thead><tr><th>Показатель</th>'+CLAB.map(x=>'<th class="r">'+x+'</th>').join('')+'</tr></thead><tbody>';
+  rows.forEach(r=>{ h+='<tr><td style="font-weight:600">'+r[0]+'</td>'+CORDER.map(k=>'<td class="r">'+r[2](r[1](MONTHS[k]))+'</td>').join('')+'</tr>'; });
+  byId('cmpTable').innerHTML=h+'</tbody>';
+})();
+renderCompare();
+
+/* ===== Точки роста прибыли (статично) ===== */
+(function(){
+  var g=GROWTH; if(!g)return;
+  byId('g-deficit').textContent='−'+fmt(g.totalLost);
+  byId('g-loss').textContent='−'+fmt(-g.lossSum);
+  byId('g-frozen').textContent=fmt(g.frozen);
+  byId('g-pot').textContent='+'+fmt(g.potentialMax);
+  var t=g.topDeficit[0];
+  byId('g-note').innerHTML='Хит «'+(t?t.name:'')+'» теряет около <b>'+fmt(t?t.lost:0)+' ₽/мес</b> из-за нехватки остатка. Всего под риском до <b>'+fmt(g.totalLost)+' ₽/мес</b> прибыли. Ниже — сколько именно дозаказать по каждой позиции. Итог при выполнении плана: <b>+'+fmt(g.potentialMax)+' ₽/мес</b> и высвобождение '+fmt(g.frozen)+' ₽ оборотки.';
+  byId('g-deficitBody').innerHTML=g.topDeficit.map(function(r){
+    var cls=r.cover<=7?'p-red':(r.cover<=20?'p-org':'p-amb');
+    return '<tr><td style="font-weight:600">'+r.name+'</td><td class="r">'+r.vel+'</td><td class="r">'+r.stock+'</td><td class="r"><span class="pill '+cls+'">'+r.cover+' дн</span></td><td class="r neg">−'+fmt(r.lost)+' ₽</td><td class="r" style="font-weight:800;color:var(--blue)">'+r.order+' шт</td></tr>';
+  }).join('');
+  byId('g-lossBody').innerHTML=g.losers.map(function(o){
+    return '<tr><td style="font-weight:600">'+o.name+'</td><td class="r neg">'+fmt(o.monthlyLoss)+' ₽</td><td class="r neg">'+o.marginPct+'%</td></tr>';
+  }).join('');
+})();
+
+/* ===== ПЕРЕКЛЮЧАТЕЛЬ МАГАЗИНОВ + ЛЕТУАЛЬ ===== */
+const LETOILE={"period":"01.07–07.07","periodRaw":"2026-07-01-2026-07-07","days":7,"tot":{"zak":6,"zakR":21010,"dost":4,"dostR":16460,"stock":138,"check":4115},"series":[{"d":1,"zak":2,"zakR":4675,"dost":0,"dostR":0},{"d":2,"zak":3,"zakR":14085,"dost":0,"dostR":0},{"d":3,"zak":0,"zakR":0,"dost":0,"dostR":0},{"d":4,"zak":0,"zakR":0,"dost":0,"dostR":0},{"d":5,"zak":0,"zakR":0,"dost":0,"dostR":0},{"d":6,"zak":1,"zakR":2250,"dost":4,"dostR":16460},{"d":7,"zak":0,"zakR":0,"dost":0,"dostR":0}],"brands":[{"name":"KERASTASE","zak":6,"zakR":21010,"dost":4,"dostR":16460}],"skus":[{"art":"фондантцикахром200","name":"Молочко для окрашенных чувствительных или повр","brand":"KERASTASE","zak":1,"zakR":5040,"dost":1,"dostR":5040,"stock":17},{"art":"хронолоджистрегенерант250","name":"Шампунь-ванна для всех типов волос Chronologis","brand":"KERASTASE","zak":1,"zakR":4590,"dost":1,"dostR":4590,"stock":0},{"art":"glossabsolu250","name":"Шампунь для блеска и гладкости волос Bain Hydr","brand":"KERASTASE","zak":1,"zakR":4455,"dost":1,"dostR":4455,"stock":2},{"art":"цикафлэштрэтмент75","name":"Молочко для восстановления осветленных волос B","brand":"KERASTASE","zak":1,"zakR":2375,"dost":1,"dostR":2375,"stock":27},{"art":"спецификдивалент80","name":"Шампунь-ванна для жирных у корней волос и сухи","brand":"KERASTASE","zak":1,"zakR":2300,"dost":0,"dostR":0,"stock":0},{"art":"генезисгидра80","name":"Шампунь-ванна для волос, склонных к выпадению ","brand":"KERASTASE","zak":1,"zakR":2250,"dost":0,"dostR":0,"stock":10}],"catalog":168,"brandCount":2,"turnover":{"totStock":120,"totSold30":108,"totNeed":109,"restock":[{"art":"ультим30","name":"Масло-уход для волос Kerastase Elixir Ul","brand":"KERASTASE","ads":1,"sold":1,"stock":0,"need":21,"ob":0},{"art":"эликсирультим250","name":"Шампунь-ванна на основе масла Марулы Eli","brand":"KERASTASE","ads":1,"sold":2,"stock":0,"need":21,"ob":0},{"art":"E3569502/E3569501","name":"Шампунь для восстановления волос по длин","brand":"L'OREAL PROFESSIONNEL","ads":0.5,"sold":2,"stock":0,"need":11,"ob":1},{"art":"E3563200","name":"Маска для предотвращения ломкости волос ","brand":"L'OREAL PROFESSIONNEL","ads":0.5,"sold":2,"stock":0,"need":11,"ob":0},{"art":"E3563501/E3563500","name":"Шампунь для восстановления волос по длин","brand":"L'OREAL PROFESSIONNEL","ads":0.44,"sold":4,"stock":0,"need":9,"ob":0},{"art":"E3547501/E3547500","name":"Шампунь для восстановления поврежденных ","brand":"L'OREAL PROFESSIONNEL","ads":0.38,"sold":5,"stock":0,"need":8,"ob":5.19},{"art":"бейнсатин80","name":"Увлажняющий шампунь-ванна для волос Nutr","brand":"KERASTASE","ads":0.27,"sold":3,"stock":0,"need":6,"ob":5.5},{"art":"генезисгидра250","name":"Шампунь-ванна для волос, склонных к выпа","brand":"KERASTASE","ads":0.29,"sold":5,"stock":0,"need":6,"ob":0},{"art":"форсархитект250","name":"Шампунь-ванна Resistance Bain Force Arch","brand":"KERASTASE","ads":0.17,"sold":4,"stock":0,"need":4,"ob":0},{"art":"хроноложистрегенерант75","name":"Маска для интенсивного питания всех типо","brand":"KERASTASE","ads":0.2,"sold":5,"stock":0,"need":4,"ob":15},{"art":"цикафлэштрэтмент250","name":"Молочко для восстановления осветленных в","brand":"KERASTASE","ads":0.1,"sold":3,"stock":0,"need":2,"ob":14},{"art":"спецификдивалент80","name":"Шампунь-ванна для жирных у корней волос ","brand":"KERASTASE","ads":0.13,"sold":4,"stock":1,"need":2,"ob":22.5}]}};
+var CUR_STORE='wb';
+function setStore(s){
+  CUR_STORE=s;
+  byId('st-wb').classList.toggle('on',s==='wb');
+  byId('st-le').classList.toggle('on',s==='le');
+  byId('heroWB').style.display=s==='wb'?'':'none';
+  byId('heroLE').style.display=s==='le'?'':'none';
+  byId('viewWB').style.display=s==='wb'?'':'none';
+  byId('viewLE').style.display=s==='le'?'':'none';
+  document.querySelector('.hero').classList.toggle('le-hero',s==='le');
+  if(s==='le')renderLetoile();
+  window.scrollTo(0,0);
+}
+function renderLetoile(){
+  var L=LETOILE;
+  byId('leLead').textContent='Период '+L.period+' 2026 · заказы, продажи, остатки и оборачиваемость магазина на Летуаль.';
+  cu(byId('le-hm-dostR'),L.tot.dostR,0,' ₽');cu(byId('le-hm-zakR'),L.tot.zakR,0,' ₽');cu(byId('le-hm-check'),L.tot.check,0,' ₽');
+  cu(byId('le-zakR'),L.tot.zakR,0,' ₽');byId('le-zakRs').textContent=L.tot.zak+' шт заказано';
+  cu(byId('le-dostR'),L.tot.dostR,0,' ₽');byId('le-dostRs').textContent=L.tot.dost+' шт доставлено';
+  cu(byId('le-check'),L.tot.check,0,' ₽');
+  cu(byId('le-stock'),L.tot.stock);
+  cu(byId('le-catalog'),L.catalog);
+  cu(byId('le-sold30'),L.turnover.totSold30);
+  cu(byId('le-need'),L.turnover.totNeed);
+  cu(byId('le-brandsN'),L.brandCount);
+  byId('le-dynSub').textContent='Каждый из '+L.days+' дней периода '+L.period;
+  byId('le-skuSub').textContent='Лидеры за '+L.period+' (заказ + доставка)';
+  var maxB=Math.max.apply(null,L.brands.map(function(x){return Math.max(x.zakR,x.dostR);}).concat([1]));
+  byId('le-brandList').innerHTML = L.brands.length ? L.brands.map(function(bb){var v=Math.max(bb.zakR,bb.dostR);
+    return '<div class="brow"><div class="bname">'+bb.name+'</div><div class="bbarwrap"><div class="bbar" style="width:'+(v/maxB*100).toFixed(1)+'%"></div></div><div class="bval">'+fmt(bb.dostR||bb.zakR)+' ₽</div><div class="bpct">'+(bb.dost||bb.zak)+' шт</div></div>';
+  }).join('') : '<div style="padding:16px 0;color:var(--sub);font-size:14px">Продаж по брендам за период пока нет.</div>';
+  byId('le-skuBody').innerHTML = L.skus.length ? L.skus.map(function(s){
+    return '<tr><td style="font-weight:600">'+s.name+'</td><td style="color:#64748B">'+s.brand+'</td><td class="r">'+s.zak+'</td><td class="r">'+fmt(s.zakR)+' ₽</td><td class="r">'+s.dost+'</td><td class="r">'+fmt(s.dostR)+' ₽</td></tr>';
+  }).join('') : '<tr><td colspan="6" style="padding:16px 10px;color:var(--sub)">Продаж за период нет.</td></tr>';
+  cu(byId('le-t-stock'),L.turnover.totStock);cu(byId('le-t-sold'),L.turnover.totSold30);cu(byId('le-t-need'),L.turnover.totNeed);cu(byId('le-t-pos'),L.turnover.restock.length);
+  byId('le-restockBody').innerHTML = L.turnover.restock.map(function(r){
+    return '<tr><td style="font-weight:600">'+r.name+'</td><td style="color:#64748B">'+r.brand+'</td><td class="r">'+r.ads+'</td><td class="r">'+r.sold+'</td><td class="r">'+r.stock+'</td><td class="r" style="font-weight:800;color:var(--blue)">'+r.need+' шт</td></tr>';
+  }).join('');
+  byId('le-insBox').innerHTML=[
+    ['var(--purple)','Премиум-сегмент','В ассортименте '+L.brandCount+' бренда (KERASTASE, L\u0027OREAL Professionnel). Средний чек '+fmt(L.tot.check)+' ₽ — дорогой уход.'],
+    ['var(--teal)','Старт на Летуаль','За '+L.period+': заказано '+L.tot.zak+' шт на '+fmt(L.tot.zakR)+' ₽, доставлено '+L.tot.dost+' шт на '+fmt(L.tot.dostR)+' ₽. Магазин в фазе разгона.'],
+    ['var(--orange)','Оборачиваемость','За 30 дней продано '+L.turnover.totSold30+' шт, потребность в поставке '+L.turnover.totNeed+' шт по '+L.turnover.restock.length+' позициям — есть что дозаказать, чтобы не терять продажи.'],
+    ['var(--blue)','Много складов','Летуаль распределяет товар по хабам (Центральный, СПб, Красноярск, Новосибирск и др.) — это учитываем при планировании поставок.']
+  ].map(function(c){return '<div class="inscard" style="--ac:'+c[0]+'"><h4>'+c[1]+'</h4><p>'+c[2]+'</p></div>';}).join('');
+  leBuildChart();
+}
+function leBuildChart(){
+  var d=LETOILE.series,W=820,H=300,padL=54,padR=10,padT=16,padB=28;
+  var innerW=W-padL-padR,innerH=H-padT-padB;
+  var maxV=Math.max.apply(null,d.map(function(x){return Math.max(x.zakR,x.dostR);}).concat([1000]));
+  var step=Math.max(1000,Math.ceil(maxV/4/1000)*1000);maxV=step*4;
+  var nn=d.length,gap=innerW/nn;
+  function y(v){return padT+innerH-(v/maxV)*innerH;}
+  function xc(i){return padL+gap*i+gap/2;}
+  var grid='',bars='',labels='',hits='';
+  for(var g=0;g<=maxV;g+=step){var gy=y(g).toFixed(1);
+    grid+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="#EDF1F7"/><text x="'+(padL-8)+'" y="'+((+gy)+4).toFixed(1)+'" text-anchor="end" font-size="11" fill="#94A3B8">'+Math.round(g/1000)+'к</text>';}
+  d.forEach(function(x,i){var cx=xc(i),bw=Math.min(gap*0.26,24);
+    bars+='<rect class="lz" data-i="'+i+'" x="'+(cx-bw-2).toFixed(1)+'" y="'+y(x.zakR).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0,(x.zakR/maxV)*innerH).toFixed(1)+'" rx="3" fill="#2563EB"/>';
+    bars+='<rect class="ld" data-i="'+i+'" x="'+(cx+2).toFixed(1)+'" y="'+y(x.dostR).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0,(x.dostR/maxV)*innerH).toFixed(1)+'" rx="3" fill="#0E8F8E"/>';
+    labels+='<text x="'+cx.toFixed(1)+'" y="'+(H-9)+'" text-anchor="middle" font-size="11" fill="#94A3B8">'+x.d+'</text>';
+    hits+='<rect class="lehit" data-i="'+i+'" x="'+(padL+gap*i).toFixed(1)+'" y="'+padT+'" width="'+gap.toFixed(1)+'" height="'+innerH+'" fill="transparent"/>';
+  });
+  var cont=byId('leChart');
+  cont.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Заказы и продажи по дням">'+grid+bars+labels+hits+'</svg>';
+  var svgEl=cont.querySelector('svg');
+  var tip=cont.querySelector('.tip'); if(!tip){tip=document.createElement('div');tip.className='tip';cont.appendChild(tip);}
+  var zbars=[].slice.call(cont.querySelectorAll('.lz')),dbars=[].slice.call(cont.querySelectorAll('.ld'));
+  var rd={day:byId('le-rdDay'),zak:byId('le-rdZak'),zakR:byId('le-rdZakR'),dost:byId('le-rdDost'),dostR:byId('le-rdDostR')};
+  var active=-1;
+  function paint(i){zbars.forEach(function(bb,j){bb.setAttribute('fill',j===i?'#1E40AF':'#2563EB');});dbars.forEach(function(bb,j){bb.setAttribute('fill',j===i?'#0a6b6a':'#0E8F8E');});}
+  function readout(i){var x=d[i];rd.day.textContent=x.d+' июля';rd.zak.textContent=x.zak+' шт';rd.zakR.textContent=fmt(x.zakR)+' ₽';rd.dost.textContent=x.dost+' шт';rd.dostR.textContent=fmt(x.dostR)+' ₽';}
+  function tooltip(i){var x=d[i];
+    tip.innerHTML='<div class="th">'+x.d+' июля</div><div class="tr"><s>Заказано</s><b class="tb">'+fmt(x.zakR)+' ₽ · '+x.zak+' шт</b></div><div class="tr"><s>Доставлено</s><b class="tg">'+fmt(x.dostR)+' ₽ · '+x.dost+' шт</b></div>';
+    var box=cont.getBoundingClientRect(),cx=xc(i)/W*box.width;tip.style.left='-9999px';tip.style.top='6px';var tw=tip.offsetWidth;
+    tip.style.left=Math.max(tw/2+6,Math.min(box.width-tw/2-6,cx))+'px';tip.classList.add('on');}
+  function select(i,wt){i=Math.max(0,Math.min(nn-1,i));if(i!==active){active=i;paint(i);readout(i);}if(wt)tooltip(i);}
+  function idx(e){var box=svgEl.getBoundingClientRect();return Math.max(0,Math.min(nn-1,Math.floor(((e.clientX-box.left)/box.width*W-padL)/gap)));}
+  var pressed=false;
+  cont.onpointerdown=function(e){pressed=true;try{cont.setPointerCapture(e.pointerId);}catch(_){}select(idx(e),e.pointerType!=='touch');};
+  cont.onpointermove=function(e){if(pressed||e.pointerType==='mouse')select(idx(e),e.pointerType==='mouse');};
+  cont.onpointerup=function(){pressed=false;};cont.onpointercancel=function(){pressed=false;};
+  cont.onpointerleave=function(e){if(e.pointerType==='mouse')tip.classList.remove('on');};
+  byId('leRdPrev').onclick=function(){select(active-1,false);};
+  byId('leRdNext').onclick=function(){select(active+1,false);};
+  var di=nn-1;for(var k=nn-1;k>=0;k--){if(d[k].zak||d[k].dost){di=k;break;}}
+  select(di,false);
+}
+
+renderMonth();
+</script>
+</body>
+</html>
