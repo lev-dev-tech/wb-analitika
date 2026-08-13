@@ -195,7 +195,7 @@ footer b{color:#fff;}
 <body>
 
 <header class="hero"><div class="wrap">
-  <div class="stoggle"><button id="st-wb" class="on" onclick="setStore('wb')">Wildberries</button><button id="st-le" onclick="setStore('le')">Летуаль</button></div>
+  <div class="stoggle"><button id="st-wb" class="on" onclick="setStore('wb')">Wildberries</button><button id="st-le" onclick="setStore('le')">Летуаль</button><button id="st-oz" onclick="setStore('oz')">Ozon</button></div>
   <div id="heroWB">
   <div class="hbadge"><span class="dot"></span> Аналитика Wildberries · 2026</div>
   <h1>Аналитика бизнеса<br><span id="hMonth">Июнь 2026</span></h1>
@@ -213,7 +213,8 @@ footer b{color:#fff;}
     <div class="hm"><b id="hm-buyout">0</b><s>Выкуп</s></div>
   </div>
   </div>
-  <div id="heroLE" style="display:none">
+ <div id="heroOZ" style="display:none"><div class="hbadge"><span class="dot"></span> Аналитика Ozon · HairHub</div><h1 style="font-size:clamp(28px,7vw,50px);font-weight:800;letter-spacing:-1.5px;margin:6px 0 10px">Ozon<br><span style="color:#34d399">Август 2026</span></h1><p style="opacity:.92;font-size:clamp(14px,3.5vw,17px);max-width:640px">Период 1–13 августа · заказы, продажи, маржа и остатки. Магазин HairHub.</p></div>
+ <div id="heroLE" style="display:none">
     <div class="hbadge"><span class="dot"></span> Аналитика Летуаль · 2026</div>
     <h1>Аналитика бизнеса<br><span>Летуаль</span></h1>
     <p class="lead" id="leLead">—</p>
@@ -463,6 +464,13 @@ footer b{color:#fff;}
   <div class="ins" id="le-insBox"></div>
 </div></section>
 </div><!-- /viewLE -->
+<div id="viewOZ" style="display:none">
+ <section class="wrap kpi" style="padding-top:26px"><div class="grid k4" id="oz-kpi"></div></section>
+ <section class="wrap"><div><span class="eyebrow">Динамика</span><h2 class="title">Заказы и доставки по дням</h2><p class="subt" id="oz-chartsub"></p></div><div class="card"><div id="oz-chart"></div></div></section>
+ <section class="wrap"><div><span class="eyebrow">Бренды</span><h2 class="title">Продажи по брендам</h2><p class="subt">По доставленным заказам</p></div><div class="card"><div class="scroller"><table class="tbl" id="oz-brands"></table></div></div></section>
+ <section class="wrap"><div><span class="eyebrow">Товары</span><h2 class="title">Топ-SKU</h2><p class="subt">Доставлено, по выручке</p></div><div class="card"><div class="scroller"><table class="tbl" id="oz-skus"></table></div></div></section>
+ <section class="wrap"><div><span class="eyebrow" style="color:var(--green);background:#E6F6EF">Деньги</span><h2 class="title">Начисления и прибыль Ozon</h2><p class="subt">Из финансового отчёта Ozon за 1–13 августа. ЧП ориентировочный (начисления идут с задержкой).</p></div><div class="grid k4" id="oz-fin"></div></section>
+</div><!-- /viewOZ -->
 
 <footer><div class="wrap">
   <b>Аналитика бизнеса · Wildberries 2026</b><br>
@@ -790,17 +798,32 @@ renderCompare();
 
 /* ===== ПЕРЕКЛЮЧАТЕЛЬ МАГАЗИНОВ + ЛЕТУАЛЬ ===== */
 const LETOILE={"period":"01.07–07.07","periodRaw":"2026-07-01-2026-07-07","days":7,"tot":{"zak":6,"zakR":21010,"dost":4,"dostR":16460,"stock":138,"check":4115},"series":[{"d":1,"zak":2,"zakR":4675,"dost":0,"dostR":0},{"d":2,"zak":3,"zakR":14085,"dost":0,"dostR":0},{"d":3,"zak":0,"zakR":0,"dost":0,"dostR":0},{"d":4,"zak":0,"zakR":0,"dost":0,"dostR":0},{"d":5,"zak":0,"zakR":0,"dost":0,"dostR":0},{"d":6,"zak":1,"zakR":2250,"dost":4,"dostR":16460},{"d":7,"zak":0,"zakR":0,"dost":0,"dostR":0}],"brands":[{"name":"KERASTASE","zak":6,"zakR":21010,"dost":4,"dostR":16460}],"skus":[{"art":"фондантцикахром200","name":"Молочко для окрашенных чувствительных или повр","brand":"KERASTASE","zak":1,"zakR":5040,"dost":1,"dostR":5040,"stock":17},{"art":"хронолоджистрегенерант250","name":"Шампунь-ванна для всех типов волос Chronologis","brand":"KERASTASE","zak":1,"zakR":4590,"dost":1,"dostR":4590,"stock":0},{"art":"glossabsolu250","name":"Шампунь для блеска и гладкости волос Bain Hydr","brand":"KERASTASE","zak":1,"zakR":4455,"dost":1,"dostR":4455,"stock":2},{"art":"цикафлэштрэтмент75","name":"Молочко для восстановления осветленных волос B","brand":"KERASTASE","zak":1,"zakR":2375,"dost":1,"dostR":2375,"stock":27},{"art":"спецификдивалент80","name":"Шампунь-ванна для жирных у корней волос и сухи","brand":"KERASTASE","zak":1,"zakR":2300,"dost":0,"dostR":0,"stock":0},{"art":"генезисгидра80","name":"Шампунь-ванна для волос, склонных к выпадению ","brand":"KERASTASE","zak":1,"zakR":2250,"dost":0,"dostR":0,"stock":10}],"catalog":168,"brandCount":2,"turnover":{"totStock":120,"totSold30":108,"totNeed":109,"restock":[{"art":"ультим30","name":"Масло-уход для волос Kerastase Elixir Ul","brand":"KERASTASE","ads":1,"sold":1,"stock":0,"need":21,"ob":0},{"art":"эликсирультим250","name":"Шампунь-ванна на основе масла Марулы Eli","brand":"KERASTASE","ads":1,"sold":2,"stock":0,"need":21,"ob":0},{"art":"E3569502/E3569501","name":"Шампунь для восстановления волос по длин","brand":"L'OREAL PROFESSIONNEL","ads":0.5,"sold":2,"stock":0,"need":11,"ob":1},{"art":"E3563200","name":"Маска для предотвращения ломкости волос ","brand":"L'OREAL PROFESSIONNEL","ads":0.5,"sold":2,"stock":0,"need":11,"ob":0},{"art":"E3563501/E3563500","name":"Шампунь для восстановления волос по длин","brand":"L'OREAL PROFESSIONNEL","ads":0.44,"sold":4,"stock":0,"need":9,"ob":0},{"art":"E3547501/E3547500","name":"Шампунь для восстановления поврежденных ","brand":"L'OREAL PROFESSIONNEL","ads":0.38,"sold":5,"stock":0,"need":8,"ob":5.19},{"art":"бейнсатин80","name":"Увлажняющий шампунь-ванна для волос Nutr","brand":"KERASTASE","ads":0.27,"sold":3,"stock":0,"need":6,"ob":5.5},{"art":"генезисгидра250","name":"Шампунь-ванна для волос, склонных к выпа","brand":"KERASTASE","ads":0.29,"sold":5,"stock":0,"need":6,"ob":0},{"art":"форсархитект250","name":"Шампунь-ванна Resistance Bain Force Arch","brand":"KERASTASE","ads":0.17,"sold":4,"stock":0,"need":4,"ob":0},{"art":"хроноложистрегенерант75","name":"Маска для интенсивного питания всех типо","brand":"KERASTASE","ads":0.2,"sold":5,"stock":0,"need":4,"ob":15},{"art":"цикафлэштрэтмент250","name":"Молочко для восстановления осветленных в","brand":"KERASTASE","ads":0.1,"sold":3,"stock":0,"need":2,"ob":14},{"art":"спецификдивалент80","name":"Шампунь-ванна для жирных у корней волос ","brand":"KERASTASE","ads":0.13,"sold":4,"stock":1,"need":2,"ob":22.5}]}};
+const OZON={"store":"HairHub","period":"1–13 августа","days":13,"tot":{"ordU":73,"ordR":126344.66,"salU":17,"salR":34510.07,"cogs":19980,"margin":14530.07,"marginPct":42.1,"canU":14,"buyout":23.3},"series":[{"d":1,"ordU":5,"ordR":9597.14,"salU":4,"salR":8203.23},{"d":2,"ordU":5,"ordR":7106.95,"salU":3,"salR":4135.03},{"d":3,"ordU":4,"ordR":8700.05,"salU":3,"salR":7435.44},{"d":4,"ordU":8,"ordR":16791.09,"salU":2,"salR":5570.72},{"d":5,"ordU":7,"ordR":13808.35,"salU":1,"salR":1370.48},{"d":6,"ordU":9,"ordR":17044.22,"salU":3,"salR":6398.98},{"d":7,"ordU":6,"ordR":11098.52,"salU":0,"salR":0},{"d":8,"ordU":5,"ordR":10133.14,"salU":1,"salR":1396.19},{"d":9,"ordU":1,"ordR":1018.1,"salU":0,"salR":0},{"d":10,"ordU":2,"ordR":2061.76,"salU":0,"salR":0},{"d":11,"ordU":8,"ordR":9725.94,"salU":0,"salR":0},{"d":12,"ordU":12,"ordR":17856.93,"salU":0,"salR":0},{"d":13,"ordU":1,"ordR":1402.47,"salU":0,"salR":0}],"brands":[{"name":"MOCHEQI","salU":16,"salR":29619.07,"margin":9639.07,"mpct":32.5},{"name":"Kerastase","salU":1,"salR":4891,"margin":4891,"mpct":100}],"skus":[{"art":"MCQ-SERUM-THERMO-150","name":"Сыворотка-спрей для волос MOCHEQI термозащита несмываемая, для блеска и гладкости, 150 мл","brand":"MOCHEQI","salU":8,"salR":10610.4,"margin":4370.4,"mpct":41.2},{"art":"MCQ-SET-MYATA-RIS-738","name":"Подарочный набор для волос MOCHEQI мята и рис: шампунь и кондиционер, 2х738 мл","brand":"MOCHEQI","salU":2,"salR":8220.6,"margin":2100.6,"mpct":25.6},{"art":"денсифик200","name":"Молочко Kerastase Fondant Densite Kerastase Densifique200 мл","brand":"Kerastase","salU":1,"salR":4891,"margin":4891,"mpct":100},{"art":"MCQ-SERUM-2-150","name":"Сыворотка для волос MOCHEQI для гладкости, блеска и восстановления, несмываемая, 150 мл","brand":"MOCHEQI","salU":3,"salR":4507.7,"margin":1447.7,"mpct":32.1},{"art":"MCQ-SET-ARGANA-518","name":"Подарочный набор для волос MOCHEQI с маслом арганы: шампунь и кондиционер, 2х518 мл","brand":"MOCHEQI","salU":1,"salR":3497.63,"margin":1097.63,"mpct":31.4},{"art":"MCQ-SHMP-MYATA-318","name":"Шампунь для волос MOCHEQI MUSK с мятой освежающий, для всех типов волос, 318 мл","brand":"MOCHEQI","salU":1,"salR":1437.74,"margin":237.74,"mpct":16.5},{"art":"MCQ-CREAM-MW-280","name":"Крем для волос MOCHEQI Miracle Wave несмываемый, для укладки и разглаживания, 280 мл","brand":"MOCHEQI","salU":1,"salR":1345,"margin":385,"mpct":28.6}],"stock":{"fbo":1,"fbs":130,"units":131},"nachNet":42000.91,"chp":22020.91,"chpPct":63.8};
+function ozKpi(lab,val,sub,ac){return '<div class="card" style="--ac:'+ac+'"><div class="lab">'+lab+'</div><div class="val">'+val+'</div><div class="sub">'+sub+'</div></div>';}
+function ozChart(s){var mx=Math.max(1,Math.max.apply(0,s.map(function(d){return d.ordU;})));var w=100/s.length;
+ var bars=s.map(function(d,i){var ho=d.ordU/mx*88,hs=d.salU/mx*88,x=i*w;
+  return '<rect x="'+(x+w*0.15)+'" y="'+(94-ho)+'" width="'+(w*0.7)+'" height="'+ho+'" fill="#2563EB" rx="0.6"></rect>'+
+   (hs>0?'<rect x="'+(x+w*0.30)+'" y="'+(94-hs)+'" width="'+(w*0.40)+'" height="'+hs+'" fill="#059669" rx="0.6"></rect>':'')+
+   '<text x="'+(x+w/2)+'" y="99" font-size="2.6" text-anchor="middle" fill="#94a3b8">'+d.d+'</text>';}).join('');
+ return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:210px;display:block">'+bars+'</svg><div style="font-size:12px;color:var(--sub);margin-top:8px"><span style="color:#2563EB">■</span> заказано &nbsp; <span style="color:#059669">■</span> доставлено</div>';}
+function renderOzon(){var o=OZON,t=o.tot;
+ byId('oz-kpi').innerHTML=ozKpi('Заказано',t.ordU+' шт',fmt(t.ordR)+' ₽','var(--blue)')+ozKpi('Доставлено',t.salU+' шт',fmt(t.salR)+' ₽ · выкуп '+t.buyout+'%','var(--green)')+ozKpi('Маржа доставленных',dec1(t.marginPct)+'%',fmt(t.margin)+' ₽ валовая','var(--teal)')+ozKpi('Остатки',o.stock.units+' шт','FBO '+o.stock.fbo+' · FBS '+o.stock.fbs,'var(--orange)');
+ byId('oz-chartsub').textContent='1–13 августа · заказано '+t.ordU+' шт, доставлено '+t.salU+', отменено '+t.canU;
+ byId('oz-chart').innerHTML=ozChart(o.series);
+ byId('oz-brands').innerHTML='<thead><tr><th>Бренд</th><th class="r">Дост. шт</th><th class="r">Выручка ₽</th><th class="r">Маржа %</th></tr></thead><tbody>'+o.brands.map(function(b){return '<tr><td style="font-weight:600">'+b.name+'</td><td class="r">'+b.salU+'</td><td class="r">'+fmt(b.salR)+'</td><td class="r">'+dec1(b.mpct)+'%</td></tr>';}).join('')+'</tbody>';
+ byId('oz-skus').innerHTML='<thead><tr><th>Артикул</th><th>Бренд</th><th class="r">Дост.</th><th class="r">Выручка</th><th class="r">Маржа %</th></tr></thead><tbody>'+o.skus.map(function(s){return '<tr><td style="font-weight:600">'+s.art+'</td><td>'+s.brand+'</td><td class="r">'+s.salU+'</td><td class="r">'+fmt(s.salR)+'</td><td class="r">'+dec1(s.mpct)+'%</td></tr>';}).join('')+'</tbody>';
+ byId('oz-fin').innerHTML=ozKpi('Нетто начислений Ozon','+'+fmt(o.nachNet)+' ₽','комиссия, выкрутка, акции','var(--purple)')+ozKpi('Себест проданного','−'+fmt(t.cogs)+' ₽','закупка доставленного','var(--red)')+ozKpi('Чистая прибыль (оценка)',fmt(o.chp)+' ₽',dec1(o.chpPct)+'% от продаж','var(--green)')+ozKpi('Отмены',t.canU+' шт',Math.round(t.canU/(t.ordU+t.canU)*100)+'% заказов','var(--red)');
+}
 var CUR_STORE='wb';
 function setStore(s){
   CUR_STORE=s;
-  byId('st-wb').classList.toggle('on',s==='wb');
-  byId('st-le').classList.toggle('on',s==='le');
+  ['wb','le','oz'].forEach(function(x){byId('st-'+x).classList.toggle('on',s===x);byId('view'+x.toUpperCase()).style.display=s===x?'':'none';});
   byId('heroWB').style.display=s==='wb'?'':'none';
   byId('heroLE').style.display=s==='le'?'':'none';
-  byId('viewWB').style.display=s==='wb'?'':'none';
-  byId('viewLE').style.display=s==='le'?'':'none';
+  byId('heroOZ').style.display=s==='oz'?'':'none';
   document.querySelector('.hero').classList.toggle('le-hero',s==='le');
   if(s==='le')renderLetoile();
+  if(s==='oz')renderOzon();
   window.scrollTo(0,0);
 }
 function renderLetoile(){
